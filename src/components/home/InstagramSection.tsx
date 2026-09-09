@@ -29,68 +29,70 @@ interface RealInstaPost {
 
 const realInstaPosts: RealInstaPost[] = [
   {
-    id: "DdCT_cnTXnL",
-    type: "reel",
-    url: "https://www.instagram.com/reel/DdCT_cnTXnL/",
-    embedUrl: "https://www.instagram.com/reel/DdCT_cnTXnL/embed",
-    title: "HOW DO AI AGENTS ACTUALLY WORK?",
-    caption: "Finally finished the feature. git pull Git: CONFLICTS: 47 💀 I just wanted to go home bro 😭",
-    tag: "AI Agents & Git",
-    highlight: "Featured Reel",
-    fallbackImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "DdCRSjyjXAj",
-    type: "post",
-    url: "https://www.instagram.com/p/DdCRSjyjXAj/",
-    embedUrl: "https://www.instagram.com/p/DdCRSjyjXAj/embed",
-    title: "RAG Architecture: It Was Free vs It Was NOT Free",
-    caption: "It was free. It was NOT free. 💀 AWS: 📈 Me: 📉 Welcome to Prompt N Prod 🤖☁️",
-    tag: "RAG & Cloud Costs",
-    highlight: "Architecture Teardown",
-    fallbackImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "DdCQl6wzMNb",
-    type: "reel",
-    url: "https://www.instagram.com/reel/DdCQl6wzMNb/",
-    embedUrl: "https://www.instagram.com/reel/DdCQl6wzMNb/embed",
-    title: "8 AI Concepts You Need to Know in 2026",
-    caption: "asked AI to fix ONE bug. AI: “I have a better idea.” 💀 me: bro… I said ONE bug 😭 Welcome to Prompt N Prod 💀",
-    tag: "AI Engineering",
-    highlight: "Tech Breakdown",
-    fallbackImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80",
-  },
-  {
     id: "DdEwTujz-LV",
     type: "reel",
     url: "https://www.instagram.com/reel/DdEwTujz-LV/",
     embedUrl: "https://www.instagram.com/reel/DdEwTujz-LV/embed",
-    title: "Building. Breaking. Deploying.",
-    caption: "POV: it worked in dev 💀 Follow for real-world production chaos.",
-    tag: "Dev Reality",
-    highlight: "Trending Reel",
-    fallbackImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80",
+    title: "HOW DO AI AGENTS ACTUALLY WORK?",
+    caption: "Finally finished the feature. git pull Git: CONFLICTS: 47 💀 I just wanted to go home bro 😭 #devreality",
+    tag: "AI Agents & Git",
+    highlight: "Featured Reel",
+    fallbackImage: "/instagram/reel-ai-agents.jpg",
   },
   {
     id: "DdEvoULz_5D",
     type: "reel",
     url: "https://www.instagram.com/reel/DdEvoULz_5D/",
     embedUrl: "https://www.instagram.com/reel/DdEvoULz_5D/embed",
-    title: "From Prompt to Production 🚀",
-    caption: "High-signal engineering meets everyday developer life. #devmemes #techchaos",
-    tag: "Full-Stack Dev",
-    fallbackImage: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80",
+    title: "RAG Architecture: It Was Free vs It Was NOT Free",
+    caption: "It was free. It was NOT free. 💀 AWS: 📈 Me: 📉 Vector DB + LLM tokens in production. Welcome to Prompt N Prod 🤖☁️",
+    tag: "RAG & Cloud Costs",
+    highlight: "Architecture Teardown",
+    fallbackImage: "/instagram/reel-rag-architecture.jpg",
   },
   {
     id: "DdEn7p-zfrg",
     type: "reel",
     url: "https://www.instagram.com/reel/DdEn7p-zfrg/",
     embedUrl: "https://www.instagram.com/reel/DdEn7p-zfrg/embed",
-    title: "Friday 5PM Production Deploy",
-    caption: "Live on prod with 0 downtime 🤖☁️ When the docker container finally spins up smoothly.",
-    tag: "DevOps & Cloud",
-    fallbackImage: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80",
+    title: "8 AI Concepts You Need to Know in 2026",
+    caption: "asked AI to fix ONE bug. AI: “I have a better idea.” 💀 me: bro… I said ONE bug 😭 High-signal AI engineering concepts you need.",
+    tag: "AI Engineering",
+    highlight: "Tech Breakdown",
+    fallbackImage: "/instagram/reel-8-ai-concepts.jpg",
+  },
+  {
+    id: "DdEK7oCzOH9",
+    type: "reel",
+    url: "https://www.instagram.com/reel/DdEK7oCzOH9/",
+    embedUrl: "https://www.instagram.com/reel/DdEK7oCzOH9/embed",
+    title: "SQL JOINs: Watch What Happens to the Rows",
+    caption: "SQL JOINs confuse you? Watch what happens to the rows. Visual breakdown of INNER, LEFT, RIGHT, and FULL joins 📊",
+    tag: "Database & SQL",
+    highlight: "Dev Essentials",
+    fallbackImage: "/instagram/reel-sql-joins.jpg",
+  },
+  {
+    id: "DdD7OGGzQq0",
+    type: "reel",
+    url: "https://www.instagram.com/reel/DdD7OGGzQq0/",
+    embedUrl: "https://www.instagram.com/reel/DdD7OGGzQq0/embed",
+    title: "That's My AI Roadmap for 2026",
+    caption: "From prompt craft to building production autonomous agents with memory, tools, and evaluation loops 🚀",
+    tag: "AI Career Roadmap",
+    highlight: "Must Watch",
+    fallbackImage: "/instagram/reel-ai-roadmap.jpg",
+  },
+  {
+    id: "DdCVJ5ajW5Z",
+    type: "post",
+    url: "https://www.instagram.com/p/DdCVJ5ajW5Z/",
+    embedUrl: "https://www.instagram.com/p/DdCVJ5ajW5Z/embed",
+    title: "It Worked on My Machine / QA: Interesting",
+    caption: "Dev: “It worked on my machine 🤷‍♂️” QA: “That's interesting, let me try in staging 💀” When local dev meets reality.",
+    tag: "Dev Humor & QA",
+    highlight: "Community Post",
+    fallbackImage: "/instagram/post-got-meme.jpg",
   },
 ];
 
@@ -193,14 +195,14 @@ export function InstagramSection() {
               {/* Media Thumbnail with Interactive Play Trigger */}
               <div 
                 onClick={() => setActiveEmbedPost(post)}
-                className="relative aspect-video w-full overflow-hidden bg-slate-900 cursor-pointer"
+                className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900 cursor-pointer"
               >
                 <Image
                   src={post.fallbackImage}
                   alt={post.title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
                 />
 
                 {/* Top Badges */}
