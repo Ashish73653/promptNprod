@@ -5,6 +5,7 @@ import { RoadmapSection } from "@/components/home/RoadmapSection";
 import { ProjectSection } from "@/components/home/ProjectSection";
 import { InteractiveScorecardDemo } from "@/components/home/InteractiveScorecardDemo";
 import { MemeStrip } from "@/components/home/MemeStrip";
+import { InstagramSection } from "@/components/home/InstagramSection";
 import { articles } from "@/data/articles";
 import { roadmaps } from "@/data/roadmaps";
 import { projects } from "@/data/projects";
@@ -31,6 +32,9 @@ export default function HomePage() {
 
       {/* Developer Culture & Live Memes Strip */}
       <MemeStrip />
+
+      {/* Instagram Community & Reels Showcase */}
+      <InstagramSection />
 
       {/* Evolution Roadmap Banner */}
       <section className="py-12 sm:py-16">

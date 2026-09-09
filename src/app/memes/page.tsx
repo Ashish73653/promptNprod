@@ -14,8 +14,18 @@ export default function MemesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="max-w-3xl mb-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 text-rose-500 text-xs font-bold uppercase tracking-wider mb-3 border border-rose-500/20">
-            <Laugh className="w-3.5 h-3.5" /> Dev Culture & Humor
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 text-rose-500 text-xs font-bold uppercase tracking-wider border border-rose-500/20">
+              <Laugh className="w-3.5 h-3.5" /> Dev Culture & Humor
+            </div>
+            <a
+              href="https://www.instagram.com/promptnprod"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-pink-500/10 to-amber-500/10 text-pink-600 dark:text-pink-400 text-xs font-bold border border-pink-500/20 hover:scale-105 transition-transform"
+            >
+              <span>Daily Reels on @promptnprod →</span>
+            </a>
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Developer Memes & Friday Deploys

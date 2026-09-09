@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Zap, Send, CheckCircle2, ArrowUpRight, Sparkles } from "lucide-react";
-import { GithubIcon, TwitterIcon } from "../ui/Icons";
+import { GithubIcon, TwitterIcon, InstagramIcon } from "../ui/Icons";
 
 export function Footer() {
   const [email, setEmail] = useState("");
@@ -153,6 +153,16 @@ export function Footer() {
               </Link>
             </div>
             <div className="flex items-center gap-2">
+              <a
+                href="https://www.instagram.com/promptnprod"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram @promptnprod"
+                title="@promptnprod on Instagram"
+                className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-pink-500 hover:border-pink-500/40 transition-colors"
+              >
+                <InstagramIcon className="w-4 h-4" />
+              </a>
               <a
                 href="https://github.com"
                 target="_blank"
