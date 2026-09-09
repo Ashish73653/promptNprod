@@ -34,18 +34,19 @@ export const roadmapCheckpoints: RoadmapCheckpoint[] = [
     ]
   },
   {
-    phase: "Phase 3 - Real Data Layer",
+    phase: "Phase 3 - Real Data Layer & Notion Sync",
     checkpointNumber: 3,
-    title: "Managed Postgres & API Layer",
+    title: "Postgres API Layer & Notion Engineering Notes",
     status: "Upcoming",
     duration: "2-3 weeks",
-    summary: "Transition from static JSON/MDX into a managed Postgres database via Supabase or Neon, with Drizzle ORM and Next.js Route Handlers.",
-    techStack: ["Postgres (Supabase / Neon)", "Drizzle ORM", "Next.js Route Handlers", "Zod Validation"],
-    keyDeliverable: "Relational data model for Articles, Roadmaps, User Bookmarks, Upvotes, and Submission workflows.",
+    summary: "Transition from static JSON/MDX into a managed Postgres database (Supabase/Neon) and integrate the official Notion API to automatically sync and publish your private tech notes, architecture breakdowns, and cheatsheets into a public engineering notebook.",
+    techStack: ["Notion API (@notionhq/client)", "notion-to-md", "Postgres (Supabase / Neon)", "Drizzle ORM", "Next.js Route Handlers"],
+    keyDeliverable: "Headless Notion publishing engine allowing one-click note sync from Notion workspaces directly into Prompt N Prod, paired with a persistent relational database for live community bookmarks and upvotes.",
     highlights: [
-      "ACID transactions and type-safe schemas",
-      "Row-Level Security (RLS) policies",
-      "Real-time live upvote sync across concurrent users"
+      "Notion-to-Platform Sync: Draft notes in Notion and publish them instantly as rich tech articles or cheatsheets",
+      "Persistent relational data model for community submissions, upvotes, and bookmarks",
+      "Automatic markdown conversion preserving callouts, code blocks, and toggle lists from Notion",
+      "Row-Level Security (RLS) policies and real-time live upvote sync across concurrent users"
     ]
   },
   {
