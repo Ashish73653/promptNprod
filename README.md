@@ -78,14 +78,22 @@ The generative AI explosion has created immense noise. Every day brings dozens o
 
 ### 5. ☕ Developer Memes & Culture (`/memes`)
 - Curated gallery with categories: *Production Incidents*, *AI Hype vs Reality*, *CSS & Frontend Quirks*, and *Junior vs Senior*.
+- **Community Submissions**: Instant "Submit a Meme" modal with live preview and local persistence.
+- **Reddit Sync**: One-click live synchronization with `r/ProgrammerHumor` fetching top trending developer memes.
 - Interactive upvote counters with persistent client-side storage.
 - Full-screen lightbox modal with image zoom and direct link sharing.
 
-### 6. 🗺️ Platform Mission & 7-Phase Build Roadmap (`/about`)
+### 6. ✍️ Visual Article & Markdown Studio (`/admin/editor`)
+- Checkpoint 2 headless authoring studio for creating, scoring, and previewing tech radar breakdowns.
+- Real-time rating rubric sliders calculating dynamic decision scores (Must Learn, High Priority, etc.).
+- Live layout preview mirroring production `/feed/[slug]` typography and styling.
+- One-click copy or `.md` file download ready to commit into `content/articles/`.
+
+### 7. 🗺️ Platform Mission & 7-Phase Build Roadmap (`/about`)
 - Overview of Prompt N Prod's core philosophy: *High-Performance Engineering*, *Structured Progression*, and *Objective Evaluation*.
 - Interactive visual timeline tracking all 7 checkpoints from the master engineering blueprint:
-  - ✅ **Checkpoint 1 (Live)**: Core Platform Architecture (Next.js 16, Tailwind, Fuse.js, Framer Motion)
-  - ⏳ **Checkpoint 2 (Upcoming)**: Headless Content Management (Git MDX / CMS)
+  - ✅ **Checkpoint 1 (Completed)**: Core Platform Architecture (Next.js 16, Tailwind, Fuse.js, Framer Motion)
+  - ✅ **Checkpoint 2 (Completed)**: Headless Content Management (Markdown Studio, gray-matter parser, Reddit sync)
   - ⏳ **Checkpoint 3 (Planned)**: Managed Postgres Layer (Supabase / Neon + Drizzle ORM)
   - ⏳ **Checkpoint 4 (Planned)**: Automated Ingestion Feed (Vercel Cron & RSS Parsers)
   - ⏳ **Checkpoint 5 (Planned)**: AI Intelligence Layer (Anthropic Claude & pgvector)

@@ -20,16 +20,17 @@ export const roadmapCheckpoints: RoadmapCheckpoint[] = [
   {
     phase: "Phase 2 - Content Management",
     checkpointNumber: 2,
-    title: "Headless Content Management",
-    status: "Upcoming",
+    title: "Headless Content Management & Community Hub",
+    status: "Live",
     duration: "1-2 weeks",
-    summary: "Move beyond manual file edits to Git-based MDX and optional headless CMS (Sanity or Notion-as-CMS API) for effortless non-code publishing.",
-    techStack: ["Git-based MDX", "Sanity / Notion API", "Next.js ISR / On-Demand Revalidation"],
-    keyDeliverable: "Publish articles and roadmap milestones from Notion or Sanity studio with automatic instant revalidation.",
+    summary: "Git-based Markdown parsing with gray-matter, visual authoring studio (/admin/editor), automated live Reddit developer meme synchronization, and community submission flows.",
+    techStack: ["Git-based Markdown", "gray-matter", "Visual Article Studio", "Reddit Meme API Sync", "localStorage Persistence"],
+    keyDeliverable: "Publish articles via Markdown files or the interactive Article Studio, submit memes via community modal, and sync live developer memes on demand.",
     highlights: [
-      "Zero-deploy content updates via webhooks",
-      "Rich media asset pipeline with automatic AVIF/WebP compression",
-      "Visual preview drafts before pushing to production"
+      "File-based publishing: Drop any .md file into content/articles/ to instantly generate SSG pages",
+      "Interactive Article Studio with live scorecard preview, syntax highlighting, and .md download",
+      "Live Reddit sync pulling trending developer memes directly from r/ProgrammerHumor",
+      "Community meme submission modal with live image preview"
     ]
   },
   {

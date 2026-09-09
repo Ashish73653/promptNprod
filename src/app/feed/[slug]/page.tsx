@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { articles } from "@/data/articles";
+import { getAllArticles, getArticleBySlug } from "@/lib/content";
 import { ScorecardWidget } from "@/components/ui/ScorecardWidget";
 import { formatDate } from "@/lib/utils";
 import { 
@@ -11,16 +11,34 @@ import {
   Sparkles, 
   CheckCircle2, 
   Users, 
-  Share2, 
-  Bookmark,
   ChevronRight,
   Code
 } from "lucide-react";
 
 export function generateStaticParams() {
-  return articles.map((article) => ({
+  return getAllArticles().map((article) => ({
     slug: article.slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const article = getArticleBySlug(slug);
+
+  if (!article) {
+    return {
+      title: "Article Not Found | Prompt N Prod",
+    };
+  }
+
+  return {
+    title: `${article.title} | Prompt N Prod Radar`,
+    description: article.subtitle || article.summary,
+  };
 }
 
 export default async function ArticleDetailPage({
@@ -29,7 +47,7 @@ export default async function ArticleDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = articles.find((a) => a.slug === slug);
+  const article = getArticleBySlug(slug);
 
   if (!article) {
     notFound();

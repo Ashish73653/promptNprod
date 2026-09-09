@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { articles } from "@/data/articles";
+import { getAllArticles } from "@/lib/content";
 import { roadmaps } from "@/data/roadmaps";
 import { projects } from "@/data/projects";
 
@@ -51,6 +51,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
+  const articles = getAllArticles();
   const articleRoutes: MetadataRoute.Sitemap = articles.map((article) => ({
     url: `${baseUrl}/feed/${article.slug}`,
     lastModified: new Date(article.date),
