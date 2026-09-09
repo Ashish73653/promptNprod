@@ -8,7 +8,6 @@ import { MemeStrip } from "@/components/home/MemeStrip";
 import { articles } from "@/data/articles";
 import { roadmaps } from "@/data/roadmaps";
 import { projects } from "@/data/projects";
-import { memes } from "@/data/memes";
 import Link from "next/link";
 import { ArrowRight, Compass, Sparkles } from "lucide-react";
 
@@ -30,8 +29,8 @@ export default function HomePage() {
       {/* Production Blueprints */}
       <ProjectSection projects={projects} />
 
-      {/* Developer Culture & Memes Strip */}
-      <MemeStrip memes={memes} />
+      {/* Developer Culture & Live Memes Strip */}
+      <MemeStrip />
 
       {/* Evolution Roadmap Banner */}
       <section className="py-12 sm:py-16">

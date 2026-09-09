@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Meme } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -18,14 +18,24 @@ interface MemeApiResponse {
   }>;
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const response = await fetch("https://meme-api.com/gimme/ProgrammerHumor/20", {
-      headers: {
-        Accept: "application/json",
-      },
-      next: { revalidate: 300 }, // cache for 5 minutes
-    });
+    const { searchParams } = new URL(request.url);
+    const countParam = parseInt(searchParams.get("count") || "15", 10);
+    const limit = Math.min(Math.max(countParam, 6), 50);
+
+    // Fetch slightly more to account for non-image or spoiler posts
+    const fetchCount = Math.min(limit + 10, 50);
+
+    const response = await fetch(
+      `https://meme-api.com/gimme/ProgrammerHumor/${fetchCount}`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+        next: { revalidate: 120 }, // cache briefly
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Meme service responded with status ${response.status}`);
@@ -75,8 +85,14 @@ export async function GET() {
         category = "Junior vs Senior";
       }
 
+      // Extract deterministic ID from postLink (e.g., https://redd.it/1w767r8 -> reddit-1w767r8)
+      const rawId = post.postLink
+        ? post.postLink.split("/").filter(Boolean).pop()
+        : url.split("/").filter(Boolean).pop()?.split(".")[0];
+      const deterministicId = `reddit-${rawId || Math.random().toString(36).substring(2, 9)}`;
+
       validMemes.push({
-        id: `reddit-${Math.random().toString(36).substring(2, 9)}`,
+        id: deterministicId,
         title: post.title,
         category,
         image: url,
@@ -86,7 +102,7 @@ export async function GET() {
         tags: ["Reddit", "ProgrammerHumor", "Community"],
       });
 
-      if (validMemes.length >= 12) break;
+      if (validMemes.length >= limit) break;
     }
 
     return NextResponse.json({

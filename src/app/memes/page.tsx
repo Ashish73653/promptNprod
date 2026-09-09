@@ -1,7 +1,6 @@
 import React from "react";
-import { memes } from "@/data/memes";
 import { MemeGallery } from "@/components/memes/MemeGallery";
-import { Laugh, Sparkles } from "lucide-react";
+import { Laugh } from "lucide-react";
 
 export const metadata = {
   title: "Developer Memes & Culture",
@@ -26,8 +25,8 @@ export default function MemesPage() {
           </p>
         </div>
 
-        {/* Interactive Gallery */}
-        <MemeGallery initialMemes={memes} />
+        {/* Interactive Gallery with automatic Reddit sync */}
+        <MemeGallery />
       </div>
     </div>
   );

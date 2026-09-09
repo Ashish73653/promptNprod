@@ -8,7 +8,7 @@ import { useSearch } from "../providers/SearchContext";
 import { articles } from "@/data/articles";
 import { roadmaps } from "@/data/roadmaps";
 import { projects } from "@/data/projects";
-import { memes } from "@/data/memes";
+import { Meme } from "@/types";
 
 interface SearchItem {
   id: string;
@@ -26,6 +26,22 @@ export function SearchModal() {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const [dynamicMemes, setDynamicMemes] = useState<Meme[]>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      try {
+        const community = localStorage.getItem("pnp_community_memes");
+        const reddit = localStorage.getItem("pnp_reddit_memes_cache");
+        const cList: Meme[] = community ? JSON.parse(community) : [];
+        const rList: Meme[] = reddit ? JSON.parse(reddit) : [];
+        setDynamicMemes([...cList, ...rList]);
+      } catch {
+        // Fallback
+      }
+    }
+  }, [isOpen]);
 
   // Compile search items
   const allItems: SearchItem[] = useMemo(() => {
@@ -59,18 +75,18 @@ export function SearchModal() {
       badge: "Project Blueprint",
     }));
 
-    const memeItems: SearchItem[] = memes.map((m) => ({
+    const memeItems: SearchItem[] = dynamicMemes.map((m) => ({
       id: m.id,
       title: m.title,
       subtitle: m.caption,
       type: "meme",
-      url: `/memes`,
+      url: `/memes#${m.id}`,
       category: m.category,
       badge: "Dev Meme",
     }));
 
     return [...articleItems, ...roadmapItems, ...projectItems, ...memeItems];
-  }, []);
+  }, [dynamicMemes]);
 
   const fuse = useMemo(() => {
     return new Fuse(allItems, {
