@@ -37,7 +37,7 @@ export const roadmapCheckpoints: RoadmapCheckpoint[] = [
     phase: "Phase 3 - Real Data Layer",
     checkpointNumber: 3,
     title: "Managed Postgres & API Layer",
-    status: "Planned",
+    status: "Upcoming",
     duration: "2-3 weeks",
     summary: "Transition from static JSON/MDX into a managed Postgres database via Supabase or Neon, with Drizzle ORM and Next.js Route Handlers.",
     techStack: ["Postgres (Supabase / Neon)", "Drizzle ORM", "Next.js Route Handlers", "Zod Validation"],

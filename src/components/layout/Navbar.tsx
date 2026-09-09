@@ -70,7 +70,7 @@ export function Navbar() {
                   Prompt<span className="text-cyan-500">N</span>Prod
                 </span>
                 <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 dark:text-cyan-400 border border-cyan-500/20">
-                  V1
+                  V2
                 </span>
               </div>
               <span className="text-[10px] text-slate-500 dark:text-slate-400 -mt-1 hidden sm:block">

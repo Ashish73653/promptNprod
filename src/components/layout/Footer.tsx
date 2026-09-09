@@ -143,7 +143,7 @@ export function Footer() {
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                Core Platform live. Next up: Checkpoint 2 (Content Management).
+                V2 Live (Markdown CMS & Memes). Next up: Checkpoint 3 (Managed Database).
               </p>
               <Link
                 href="/about"
