@@ -2,16 +2,16 @@
 
   <img src="public/Logo.png" alt="Prompt N Prod Logo" width="120" height="120" />
 
-  # Prompt N Prod
+  # Prompt N Prod (v2.0)
   ### From Prompt to Production.
   
-  **The high-velocity developer discovery and learning intelligence platform.**
+  **The high-velocity developer discovery platform: Visual Study Notes, Curated Tech News & Interactive Roadmaps.**
   
   [![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
   [![React](https://img.shields.io/badge/React-19.2.8-blue?style=for-the-badge&logo=react)](https://react.dev/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38bdf8?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-  [![Performance](https://img.shields.io/badge/Edge_TTFB-<50ms-emerald?style=for-the-badge&logo=cloudflare)](https://promptnprod.dev)
+  [![Instagram](https://img.shields.io/badge/Instagram-@promptnprod-E4405F?style=for-the-badge&logo=instagram)](https://www.instagram.com/promptnprod)
 
 </div>
 
@@ -23,188 +23,153 @@
 
 ## 💡 What is Prompt N Prod?
 
-The generative AI explosion has created immense noise. Every day brings dozens of wrapper tools, synthetic benchmarks, and influencer hype cycles. **Prompt N Prod** bridges the gap between prompt hype and shipping production code:
+The developer ecosystem is filled with AI hype and endless text threads that leave you confused. **Prompt N Prod** cuts through the noise with **visual clarity, mental models, interactive roadmaps, and real production code**:
 
-- 📡 **Discover What's New**: High-signal breakdowns of emerging models, frameworks, and protocols.
-- 🧭 **Master Structured Roadmaps**: Chronological engineering curricula with verifiable milestones and progress tracking.
-- 🛠️ **Build Production Blueprints**: Move past hello-world demos to real-world architectures with copyable production code.
-- ⚖️ **"Should I Learn This?" Scorecard**: An objective rubric calculating whether to adopt, learn, or ignore any new technology.
-- ☕ **Developer Culture & Memes**: Relatable humor on production outages, Friday deploys, and recursive agent loops.
+- 🧠 **Visual Study Notes (Notion-Backed)**: Architecture flowcharts, system design breakdowns, and SQL mental models.
+- 📰 **Tech News & Radar**: Fast, high-signal breakdowns of major releases (Bun 1.2, DeepSeek, MCP, LLM updates).
+- 🗺️ **Interactive Roadmaps & Projects**: Curated learning tracks where every milestone directly embeds a real hands-on project to build.
+- 🎬 **Official `@promptnprod` Instagram Hub**: Authentic reels, video teardowns, and interactive on-site embeds.
+- ☕ **Developer Culture & Memes**: Relatable dev humor with one-click live synchronization with `r/ProgrammerHumor`.
 
 ---
 
-## 🚀 Key Platform Features & Pages
+## 🚀 The 4 Core Platform Pillars
 
-### 1. 📡 Tech Radar & Breaking Signal (`/feed` & `/feed/[slug]`)
-- **Category Filters**: Filter reports by *AI & Agents*, *Full-Stack*, *Cloud & Infra*, *Dev Tools*, and *Database*.
-- **In-Depth Reports**:
-  - **Model Context Protocol (MCP)**: Anthropic's open standard bridging LLMs with heterogeneous tools and databases.
-  - **DeepSeek-V3 & R1**: Large-Scale pure RL, emergence of spontaneous reasoning, and local inference benchmarks.
-  - **Next.js Partial Prerendering & Server Actions**: Edge-cached static shells with sub-100ms dynamic streaming.
-  - **Postgres + pgvector**: HNSW indexes, halfvec quantization, and why you might not need a dedicated vector DB.
-  - **Tailwind CSS v4 Oxide**: Rust-powered engine rewrite, zero JS configuration, and pure CSS `@theme` tokens.
-  - **FastAPI vs Go Microservices**: Concurrency benchmarks for streaming SSE AI gateways.
-- **Article Features**: Executive TL;DRs, *Why It Matters*, *Who Should Care*, copyable production code snippets, and actionable takeaways.
+### 1. 🧠 Notion-Powered Study Notes (`/notes` & `/notes/[slug]`)
+- **Visual Architecture Cheatsheets**:
+  - **RAG Architecture: It Was Free vs It Was NOT Free**: Vector DB pricing traps, HNSW indexing, and hybrid BM25 search.
+  - **How AI Agents Actually Work**: ReAct loop (Thought, Action, Observation), tool schemas, and infinite loop safeguards.
+  - **Visual SQL JOINs Guide**: What actually happens to rows during INNER, LEFT, RIGHT, and ANTI-JOINs.
+  - **8 AI Concepts Every Developer Needs in 2026**: Cross-encoders, KV cache compaction, MCP, and LLM-as-a-judge evals.
+  - **2026 AI Developer Roadmap**: Recommended tech stack from prompt engineering to distributed agent swarms.
+- **Notion Reader UI**: Callout boxes, syntax-highlighted code blocks with copy-to-clipboard, key takeaway pills, and direct deep-links to associated Instagram reels.
+- **Headless Notion Sync Engine (`/api/notion/sync`)**: Built-in REST API connector ready to pull live notes directly from your Notion workspace using environment variables.
 
-### 2. 🧭 Structured Learning Roadmaps (`/learn` & `/learn/[slug]`)
-- **4 Comprehensive Engineering Curricula**:
+### 2. 🗺️ Interactive Roadmaps with Hands-On Projects (`/roadmaps` & `/roadmaps/[slug]`)
+- **4 Opinionated Engineering Curricula**:
   1. **Full-Stack AI Engineer (2026)**: LLM fundamentals, RAG pipelines, pgvector, MCP servers, and production evals.
   2. **Next.js 15/16 Modern Full-Stack**: React Server Components, Server Actions, Drizzle ORM, and edge optimization.
-  3. **Agentic Systems & MCP Architect**: State machines, multi-agent swarms, tool protocols, and evaluation harnesses.
+  3. **Agentic Systems & MCP Architect**: Deterministic state machines, multi-agent swarms, and tool calling.
   4. **Cloud-Native DevOps & Hardening**: Docker multi-stage builds, GitHub Actions CI/CD, and Sentry observability.
-- **Interactive Milestone Checklist (`RoadmapMilestones.tsx`)**:
-  - Check off completed milestones with progress saved to browser `localStorage`.
-  - Real-time completion progress bar with celebratory confetti upon milestone achievement.
-  - Curated documentation, repositories, and recommended practical projects.
+- **Embedded Hands-On Project Blueprints**:
+  - Each milestone features an expandable **"View Blueprint"** drawer.
+  - Includes: Project objective, tech stack badges, architecture flow diagram, key deliverables, and starter code snippets.
+- **Interactive Checklist**: Clickable progress toggles with `localStorage` persistence and celebratory confetti upon completion.
 
-### 3. 🛠️ Production Project Blueprints (`/build` & `/build/[slug]`)
-- **Hands-on Implementations**:
-  1. **Autonomous Research Agent with MCP**: TypeScript agent loop connecting to a custom SQLite MCP server to crawl arXiv papers.
-  2. **High-Performance RAG Document Intelligence API**: Next.js route handlers, Supabase pgvector HNSW, and hybrid search.
-  3. **Realtime Multi-tenant SaaS Analytics Dashboard**: Server-Sent Events, streaming telemetry, and responsive KPI widgets.
-  4. **AI-Powered Code Reviewer GitHub Bot**: Webhook HMAC signature verification, diff chunk parser, and inline PR feedback.
-- **Blueprint Anatomy**: Architecture flow diagrams, prerequisite checklists, guided step-by-step instructions, and pro-tips.
+### 3. 📰 High-Signal Tech News (`/feed` & `/feed/[slug]`)
+- Category filters: *AI & Agents*, *Full-Stack*, *Cloud & Infra*, *Dev Tools*, and *Database*.
+- In-depth editorial breakdowns with Executive TL;DRs, *Why It Matters*, *Who Should Care*, and code snippets.
+- **Visual Article Studio (`/admin/editor`)**: Interactive authoring tool to write, format, and preview Markdown articles.
 
-### 4. ⚖️ Interactive "Should I Learn This?" Tool (`/scorecard`)
-- Dedicated evaluation workspace allowing developers to test drive our objective rating engine.
-- Dynamic scoring algorithm:
-  $$\text{Score} = 0.45 \times \text{Relevance} + 0.45 \times \text{Impact} - \text{Difficulty Penalty} - \text{Hype Penalty}$$
-- Generates categorized verdicts:
-  - 🟢 **Must Learn (90+)**: Critical shift with transformative productivity and career leverage.
-  - 🔵 **High Priority (75-89)**: Solid architectural investment with proven adoption patterns.
-  - 🟡 **Watch & Evaluate (50-74)**: Promising, but evaluate against your specific operational bottlenecks.
-  - ⚪ **Niche / Wait (<50)**: Early prototype or high hype-to-substance ratio.
-- One-click copyable summary for team discussions.
-
-### 5. ☕ Developer Memes & Culture (`/memes`)
-- Curated gallery with categories: *Production Incidents*, *AI Hype vs Reality*, *CSS & Frontend Quirks*, and *Junior vs Senior*.
-- **Community Submissions**: Instant "Submit a Meme" modal with live preview and local persistence.
-- **Reddit Sync**: One-click live synchronization with `r/ProgrammerHumor` fetching top trending developer memes.
-- Interactive upvote counters with persistent client-side storage.
-- Full-screen lightbox modal with image zoom and direct link sharing.
-
-### 6. ✍️ Visual Article & Markdown Studio (`/admin/editor`)
-- Checkpoint 2 headless authoring studio for creating, scoring, and previewing tech radar breakdowns.
-- Real-time rating rubric sliders calculating dynamic decision scores (Must Learn, High Priority, etc.).
-- Live layout preview mirroring production `/feed/[slug]` typography and styling.
-- One-click copy or `.md` file download ready to commit into `content/articles/`.
-
-### 7. 🗺️ Platform Mission & 7-Phase Build Roadmap (`/about`)
-- Overview of Prompt N Prod's core philosophy: *High-Performance Engineering*, *Structured Progression*, and *Objective Evaluation*.
-- Interactive visual timeline tracking all 7 checkpoints from the master engineering blueprint:
-  - ✅ **Checkpoint 1 (Completed)**: Core Platform Architecture (Next.js 16, Tailwind, Fuse.js, Framer Motion)
-  - ✅ **Checkpoint 2 (Completed)**: Headless Content Management (Markdown Studio, gray-matter parser, Reddit sync)
-  - ⏳ **Checkpoint 3 (Planned)**: Managed Postgres Layer (Supabase / Neon + Drizzle ORM)
-  - ⏳ **Checkpoint 4 (Planned)**: Automated Ingestion Feed (Vercel Cron & RSS Parsers)
-  - ⏳ **Checkpoint 5 (Planned)**: AI Intelligence Layer (Anthropic Claude & pgvector)
-  - ⏳ **Checkpoint 6 (Planned)**: User Accounts & Personalized Radar
-  - ⏳ **Checkpoint 7 (Planned)**: Production Hardening (CI/CD, Sentry, Monitoring)
-
-### 7. 🔍 Global Command Palette Search (`⌘K` / `Ctrl+K`)
-- Powered by **Fuse.js** client-side fuzzy search.
-- Instant keyboard navigation across all Articles, Roadmaps, Projects, and Memes with zero backend latency.
-
-### 8. 🌓 Theming & Branding
-- **Dark & Light Mode**: Instant switching via `next-themes` with zero hydration flash.
-- **Official Brand Assets**: Custom `Logo.png`, `Banner1.png`, and multi-resolution favicons (`favicon.ico`, `apple-touch-icon.png`, `site.webmanifest`).
+### 4. ☕ Developer Culture & Memes (`/memes`)
+- Curated dev humor across *Production Outages*, *AI Hype vs Reality*, *CSS Quirks*, and *Junior vs Senior*.
+- **Live Reddit Sync**: Automatically fetches trending developer memes directly from `r/ProgrammerHumor` with infinite pagination.
+- **Community Submission Modal**: Visitors can submit custom memes with instant image previews.
+- Full-screen lightbox preview and persistent upvoting.
 
 ---
 
-## 💻 Tech Stack & Architecture
+## 📊 Project Progress: What's Done vs What's Left
+
+```mermaid
+graph TD
+    S1["✅ Stage 1: Core Foundation (COMPLETED)"]
+    S2["✅ Stage 2: Content Hub, Notion Notes & Social (COMPLETED)"]
+    S3["⏳ Stage 3: Live Postgres & Cloud Data Layer (NEXT)"]
+    S4["⏳ Stage 4: Automated Tech News Ingestion"]
+    S5["⏳ Stage 5: AI Intelligence & pgvector Semantic Search"]
+    S6["⏳ Stage 6: User Authentication & Personalization"]
+    S7["⏳ Stage 7: Custom Domain Deployment & Hardening"]
+
+    S1 --> S2
+    S2 --> S3
+    S3 --> S4
+    S4 --> S5
+    S5 --> S6
+    S6 --> S7
+```
+
+### ✅ What is Done (Stages 1 & 2 Completed)
+
+| Feature Area | Status | Key Deliverables |
+|---|:---:|---|
+| **Core Platform v1** | ✅ **Done** | Next.js 16 (App Router), Turbopack, Tailwind CSS v4, Dark/Light Theme with zero flash, 60fps GPU-composited animations. |
+| **Global ⌘K Search** | ✅ **Done** | Client-side Fuse.js fuzzy search indexing all Notes, Roadmaps, Articles, and Memes. |
+| **Notion Study Notes** | ✅ **Done** | Dedicated `/notes` directory with 5 preloaded visual cheatsheets, Notion callouts, code blocks, and `/api/notion/sync` API route. |
+| **Interactive Roadmaps** | ✅ **Done** | `/roadmaps` with 4 tracks, milestone checkboxes with confetti, and expandable **"Hands-On Project Blueprints"**. |
+| **Real Instagram Showcase** | ✅ **Done** | Authentic cover thumbnails for `@promptnprod` reels and posts, interactive on-site lightbox embed player. |
+| **Reddit Meme Auto-Sync** | ✅ **Done** | Live sync with `r/ProgrammerHumor`, Load More pagination, and Community submission modal. |
+| **Visual Article Studio** | ✅ **Done** | `/admin/editor` markdown authoring interface with live rendering and `.md` file export. |
+| **Mobile Responsiveness** | ✅ **Done** | Tested and verified at 390px mobile viewports (iOS Safari / Android Chrome friendly). |
+
+---
+
+### ⏳ What is Left (Upcoming Roadmap)
+
+#### 🔄 Stage 3: Live Postgres & Cloud Persistence *(Next Immediate Step)*
+* [ ] Provision serverless Postgres database on **Supabase** or **Neon**.
+* [ ] Type-safe database schema using **Drizzle ORM**.
+* [ ] Move community meme submissions, bookmarks, and upvotes from browser `localStorage` to global database storage.
+* [ ] Real-time upvote counters synchronized across all concurrent visitors.
+
+#### 🔄 Stage 4: Automated Tech News Ingestion
+* [ ] Scheduled serverless cron workers (Vercel Cron / GitHub Actions).
+* [ ] Connectors for **GitHub Releases API**, **Hacker News**, and engineering RSS feeds.
+* [ ] Deduplication engine that groups related stories into a draft editorial queue.
+
+#### 🔄 Stage 5: AI Intelligence & pgvector Semantic Search
+* [ ] Anthropic Claude & DeepSeek API integrations for automated TL;DR summaries.
+* [ ] Vector embeddings using `pgvector` (HNSW index) for semantic Q&A across all study notes and roadmaps.
+
+#### 🔄 Stage 6: User Authentication & Personalization
+* [ ] User login via **Clerk** or **Supabase Auth**.
+* [ ] Cross-device milestone progress synchronization.
+* [ ] Personalized engineering radar tailored to each user's chosen tech stack.
+
+#### 🚀 Stage 7: Production Deployment & Domain
+* [ ] Connect repository to **Vercel** with automated CI/CD on every `git push`.
+* [ ] Map custom domain (e.g. `promptnprod.com` or chosen domain) with automatic SSL.
+* [ ] Add Sentry crash telemetry and web analytics.
+
+---
+
+## 💻 Tech Stack
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **Framework** | Next.js 16.3.4 (App Router) | Static Generation (SSG), Edge delivery, Image & Font optimization |
-| **Language** | TypeScript 5 | Strict type-safety across content models, roadmaps, and components |
-| **Styling** | Tailwind CSS v4 | Rust Oxide engine, custom `@theme` variables, and responsive design |
-| **Animations** | Framer Motion & CSS | Strict GPU-composited transforms (`transform`, `opacity`) for 60fps performance |
-| **Search** | Fuse.js | Client-side fuzzy search across all static collections |
-| **Icons** | Lucide React + Custom SVGs | Accessible, tree-shakeable iconography |
-| **Theming** | `next-themes` | Class-based dark and light theme switching |
-| **SEO** | Next.js Metadata API | Dynamic OpenGraph cards, `sitemap.xml`, and `robots.txt` |
-
----
-
-## 📂 Project Directory Structure
-
-```text
-PromptNProd/
-├── public/                     # Brand assets, banners, favicons, and manifest
-│   ├── Logo.png                # Official Brand Logo
-│   ├── Banner1.png             # Official Platform Showcase Banner
-│   ├── favicon.ico             # Brand favicon
-│   ├── favicon-16x16.png
-│   ├── favicon-32x32.png
-│   ├── apple-touch-icon.png
-│   └── site.webmanifest
-├── src/
-│   ├── app/                    # Next.js App Router Pages
-│   │   ├── layout.tsx          # Root Layout with ThemeProvider, Navbar, Footer
-│   │   ├── page.tsx            # Landing Homepage
-│   │   ├── globals.css         # Tailwind v4 Theme Tokens, Glassmorphism, Dev Grid
-│   │   ├── sitemap.ts          # Automated SEO Dynamic Sitemap
-│   │   ├── robots.ts           # Search Engine Robots Protocol
-│   │   ├── feed/               # Tech Radar Catalog & [slug] Deep Dive
-│   │   ├── learn/              # Learning Roadmaps Catalog & [slug] Interactive Checklist
-│   │   ├── build/              # Project Blueprints Catalog & [slug] Guided Code
-│   │   ├── scorecard/          # Standalone "Should I Learn This?" Calculator Tool
-│   │   ├── memes/              # Developer Memes & Culture Gallery
-│   │   └── about/              # Mission & Strategic 7-Phase Build Roadmap Visualizer
-│   ├── components/
-│   │   ├── home/               # Hero, TrendingFeed, RoadmapSection, ProjectSection, etc.
-│   │   ├── layout/             # Sticky Navbar, Footer
-│   │   ├── memes/              # MemeGallery with Lightbox and Upvoting
-│   │   ├── providers/          # ThemeProvider and SearchContext (⌘K listener)
-│   │   ├── roadmaps/           # RoadmapMilestones with LocalStorage and Confetti
-│   │   ├── search/             # SearchModal powered by Fuse.js
-│   │   └── ui/                 # ScorecardWidget, ThemeToggle, Icons
-│   ├── data/                   # Structured Datasets
-│   │   ├── articles.ts         # In-depth Tech Radar Articles & Scorecards
-│   │   ├── roadmaps.ts         # 4 Engineering Roadmaps & Milestones
-│   │   ├── projects.ts         # Production Project Blueprints with Code
-│   │   ├── memes.ts            # Curated Dev Culture Memes
-│   │   └── checkpoints.ts      # 7 Roadmap Checkpoints
-│   ├── lib/
-│   │   └── utils.ts            # cn class merger & date formatters
-│   └── types/
-│       └── index.ts            # Core TypeScript Type Definitions
-├── next.config.ts              # Image remote domains and Next.js options
-├── package.json
-└── tsconfig.json
-```
+| **Framework** | Next.js 16.3.4 (Turbopack) | React Server Components, SSG, Route Handlers, Image Optimization |
+| **Language** | TypeScript 5 | Strict end-to-end type safety |
+| **Styling** | Tailwind CSS v4 (Oxide) | Modern CSS tokens, responsive glassmorphism |
+| **Search** | Fuse.js | High-speed client-side fuzzy search |
+| **Notion Engine** | Native REST API | Headless Notion workspace synchronization |
+| **Icons** | Lucide React + Custom SVGs | Modern iconography |
+| **Theming** | `next-themes` | Dark / Light theme switching |
 
 ---
 
 ## 🛠️ Getting Started Locally
 
 ### Prerequisites
-- Node.js `v20.0.0` or higher (tested on Node.js v24)
+- Node.js `v20.0.0` or higher
 - npm `v10` or higher
 
-### Installation
+### Installation & Run
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/Ashish73653/promptNprod.git
-   cd promptNprod
-   ```
+```bash
+# 1. Clone the repository
+git clone https://github.com/Ashish73653/promptNprod.git
+cd promptNprod
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+# 2. Install dependencies
+npm install
 
-3. **Run the local development server**:
-   ```bash
-   npm run dev
-   ```
+# 3. Start local development server
+npm run dev
+```
 
-4. **Open your browser**:
-   Navigate to [http://localhost:3000](http://localhost:3000) to explore the application.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Production Build & Static Validation
-
-To create an optimized production build and verify all static pages:
+To verify the production build:
 ```bash
 npm run build
 npm run start
@@ -212,26 +177,5 @@ npm run start
 
 ---
 
-## 📈 Strategic Build Roadmap
-
-| Checkpoint | Phase | Focus | Status |
-|:---:|---|---|:---:|
-| **01** | **Core Foundation** | Next.js 16, Tailwind v4, Roadmaps, Scorecards, Blueprints, ⌘K Search | **Live** |
-| **02** | **Content Management** | Git-based MDX & Headless CMS (Sanity / Notion API) | Upcoming |
-| **03** | **Real Data Layer** | Managed Postgres (Supabase / Neon) + Drizzle ORM | Planned |
-| **04** | **Automated Ingestion** | Scheduled Cron jobs parsing GitHub, RSS, and tech releases | Planned |
-| **05** | **AI Intelligence** | Anthropic Claude synthesis, automated TL;DRs, pgvector RAG | Planned |
-| **06** | **Personalization** | User Auth, saved milestone progress across devices, tailored feed | Planned |
-| **07** | **Production Hardening** | Automated CI/CD, Sentry crash telemetry, Better Stack monitoring | Planned |
-
----
-
 ## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-<div align="center">
-  <sub>Built with precision by the <strong>Prompt N Prod</strong> team.</sub>
-</div>
+MIT License. Built with precision for developers by **Prompt N Prod**.
