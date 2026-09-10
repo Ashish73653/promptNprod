@@ -35,15 +35,16 @@ export function Hero() {
         {/* CTA Buttons */}
         <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <Link
-            href="/feed"
-            className="px-6 py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-semibold text-sm sm:text-base flex items-center gap-2 shadow-lg shadow-cyan-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            href="/notes"
+            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 hover:opacity-95 text-white font-semibold text-sm sm:text-base flex items-center gap-2 shadow-lg shadow-rose-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            <span>Explore What&apos;s New</span>
+            <Sparkles className="w-4 h-4" />
+            <span>Visual Study Notes</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
 
           <Link
-            href="/learn"
+            href="/roadmaps"
             className="px-6 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-semibold text-sm sm:text-base flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] backdrop-blur-md"
           >
             <BookOpen className="w-4 h-4 text-cyan-500" />
@@ -51,8 +52,9 @@ export function Hero() {
           </Link>
 
           <button
+            type="button"
             onClick={openSearch}
-            className="px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/60 hover:border-cyan-500/40 text-slate-500 dark:text-slate-400 text-sm flex items-center gap-2 transition-all"
+            className="px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/60 hover:border-cyan-500/40 text-slate-500 dark:text-slate-400 text-sm flex items-center gap-2 transition-all cursor-pointer"
           >
             <Search className="w-4 h-4" />
             <span>Quick Search</span>

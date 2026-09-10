@@ -22,10 +22,9 @@ import { ThemeToggle } from "../ui/ThemeToggle";
 import { useSearch } from "../providers/SearchContext";
 
 const navLinks = [
-  { name: "What's New", href: "/feed", icon: Sparkles },
-  { name: "Learn", href: "/learn", icon: BookOpen },
-  { name: "Build", href: "/build", icon: Code2 },
-  { name: "Scorecard", href: "/scorecard", icon: SlidersHorizontal },
+  { name: "Tech News", href: "/feed", icon: Sparkles },
+  { name: "Study Notes", href: "/notes", icon: BookOpen },
+  { name: "Roadmaps", href: "/roadmaps", icon: Code2 },
   { name: "Memes", href: "/memes", icon: Laugh },
   { name: "About", href: "/about", icon: Compass },
 ];

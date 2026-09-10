@@ -75,28 +75,34 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link href="/feed" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
-                  What&apos;s New (Radar)
+                  Tech News
                 </Link>
               </li>
               <li>
-                <Link href="/learn" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
-                  Learning Roadmaps
+                <Link href="/notes" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
+                  Study Notes (Notion)
                 </Link>
               </li>
               <li>
-                <Link href="/build" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
-                  Project Blueprints
-                </Link>
-              </li>
-              <li>
-                <Link href="/scorecard" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
-                  &ldquo;Should I Learn This?&rdquo;
+                <Link href="/roadmaps" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
+                  Roadmaps &amp; Projects
                 </Link>
               </li>
               <li>
                 <Link href="/memes" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
-                  Dev Memes & Culture
+                  Dev Memes
                 </Link>
+              </li>
+              <li>
+                <a 
+                  href="https://www.instagram.com/promptnprod" 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="text-pink-500 hover:underline transition-colors flex items-center gap-1"
+                >
+                  <span>@promptnprod Reels</span>
+                  <ArrowUpRight className="w-3 h-3" />
+                </a>
               </li>
             </ul>
           </div>

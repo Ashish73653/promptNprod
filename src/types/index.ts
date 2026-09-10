@@ -64,6 +64,45 @@ export interface RoadmapMilestone {
   topics: string[];
   resources: MilestoneResource[];
   recommendedProject: string;
+  projectBlueprint?: {
+    title: string;
+    objective: string;
+    stack: string[];
+    architecture: string;
+    features: string[];
+    starterSnippet?: {
+      filename: string;
+      language: string;
+      code: string;
+    };
+  };
+}
+
+export interface StudyNote {
+  id: string;
+  slug: string;
+  title: string;
+  shortDesc: string;
+  category: "AI & Agents" | "Databases & SQL" | "System Design" | "Full-Stack" | "Cloud & DevOps";
+  icon: string;
+  coverImage?: string;
+  readTime: string;
+  updatedAt: string;
+  tags: string[];
+  keyTakeaways: string[];
+  notionUrl?: string;
+  linkedReelUrl?: string;
+  sections: {
+    title: string;
+    type?: "text" | "callout" | "code" | "diagram" | "table";
+    content?: string | string[];
+    calloutType?: "note" | "tip" | "warning" | "success";
+    codeSnippet?: {
+      language: string;
+      code: string;
+      caption?: string;
+    };
+  }[];
 }
 
 export interface Roadmap {

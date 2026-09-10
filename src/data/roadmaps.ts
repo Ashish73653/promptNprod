@@ -51,7 +51,47 @@ export const roadmaps: Roadmap[] = [
           { title: "pgvector Official Documentation", url: "https://github.com/pgvector/pgvector", type: "Repo" },
           { title: "RAG Triad & Evaluation Guide", url: "https://docs.llamaindex.ai", type: "Docs" }
         ],
-        recommendedProject: "Build a 'Chat with your Git Repo' app that answers architecture questions with exact file & line citations."
+        recommendedProject: "Build a 'Chat with your Git Repo' app that answers architecture questions with exact file & line citations.",
+        projectBlueprint: {
+          title: "High-Performance RAG Document Intelligence API",
+          objective: "Build a production-grade RAG pipeline using Supabase pgvector with HNSW indexing, hybrid BM25 keyword search, and cross-encoder reranking.",
+          stack: ["Next.js 16", "Postgres (pgvector)", "Drizzle ORM", "FlashRank", "TypeScript"],
+          architecture: "User Query ──> Query Embedder ──> Hybrid Search (HNSW + GIN Full-Text) ──> Reciprocal Rank Fusion ──> Cross-Encoder Reranker ──> Streaming LLM Response",
+          features: [
+            "Sub-15ms vector similarity queries using HNSW indexing",
+            "Hybrid BM25 keyword fallback to catch exact code identifiers",
+            "Local cross-encoder reranking that reduces token costs by 70%",
+            "Server-Sent Events (SSE) streaming with live source citations"
+          ],
+          starterSnippet: {
+            filename: "lib/rag-search.ts",
+            language: "typescript",
+            code: `import { db } from "@/db";
+import { sql } from "drizzle-orm";
+
+export async function hybridSearch(queryVector: number[], queryText: string, limit = 5) {
+  // Execute hybrid search: vector cosine similarity + tsvector full-text match
+  return await db.execute(sql\`
+    WITH vector_matches AS (
+      SELECT id, content, 1 - (embedding <=> \${JSON.stringify(queryVector)}::vector) AS score
+      FROM document_chunks
+      ORDER BY embedding <=> \${JSON.stringify(queryVector)}::vector
+      LIMIT 20
+    ),
+    text_matches AS (
+      SELECT id, content, ts_rank(tsv_content, plainto_tsquery('english', \${queryText})) AS score
+      FROM document_chunks
+      WHERE tsv_content @@ plainto_tsquery('english', \${queryText})
+      LIMIT 20
+    )
+    SELECT COALESCE(v.id, t.id) as id, COALESCE(v.content, t.content) as content
+    FROM vector_matches v
+    FULL OUTER JOIN text_matches t ON v.id = t.id
+    LIMIT \${limit};
+  \`);
+}`
+          }
+        }
       },
       {
         id: "ai-m3",
@@ -70,7 +110,38 @@ export const roadmaps: Roadmap[] = [
           { title: "Model Context Protocol Specification", url: "https://modelcontextprotocol.io", type: "Docs" },
           { title: "Anthropic MCP TypeScript SDK", url: "https://github.com/modelcontextprotocol/typescript-sdk", type: "Repo" }
         ],
-        recommendedProject: "Build an autonomous GitHub PR triage agent using MCP that clones repos, runs tests, and posts review summaries."
+        recommendedProject: "Build an autonomous GitHub PR triage agent using MCP that clones repos, runs tests, and posts review summaries.",
+        projectBlueprint: {
+          title: "Autonomous Research Agent with MCP Tools",
+          objective: "Build an autonomous agent runtime in TypeScript that discovers MCP tools, executes dynamic API calls, and synthesizes structured insights.",
+          stack: ["TypeScript", "Anthropic Claude 3.5", "MCP TypeScript SDK", "SQLite"],
+          architecture: "Goal Input ──> ReAct Loop (Thought ──> Action ──> Tool Execution ──> Observation) ──> Step Limit Safeguards ──> Structured Summary",
+          features: [
+            "Dynamic tool schema discovery via standard MCP stdio protocol",
+            "ReAct deterministic prompt loop with retry and error recovery",
+            "Hard step counter to prevent infinite execution loops",
+            "Audit log of all tool calls and observations recorded in SQLite"
+          ],
+          starterSnippet: {
+            filename: "agent/react-loop.ts",
+            language: "typescript",
+            code: `export async function executeAgentStep(history: Message[], tools: ToolDefinition[]) {
+  const completion = await anthropic.messages.create({
+    model: "claude-3-5-sonnet-latest",
+    max_tokens: 1024,
+    messages: history,
+    tools: tools.map(t => ({ name: t.name, description: t.description, input_schema: t.schema }))
+  });
+
+  const toolUse = completion.content.find(block => block.type === "tool_use");
+  if (!toolUse) {
+    return { isFinished: true, output: completion.content[0].text };
+  }
+
+  return { isFinished: false, toolCall: { name: toolUse.name, input: toolUse.input } };
+}`
+          }
+        }
       },
       {
         id: "ai-m4",

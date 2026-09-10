@@ -8,13 +8,14 @@ import { useSearch } from "../providers/SearchContext";
 import { articles } from "@/data/articles";
 import { roadmaps } from "@/data/roadmaps";
 import { projects } from "@/data/projects";
+import { studyNotes } from "@/data/notes";
 import { Meme } from "@/types";
 
 interface SearchItem {
   id: string;
   title: string;
   subtitle?: string;
-  type: "article" | "roadmap" | "project" | "meme";
+  type: "article" | "roadmap" | "project" | "meme" | "note";
   url: string;
   category?: string;
   badge?: string;
@@ -45,6 +46,16 @@ export function SearchModal() {
 
   // Compile search items
   const allItems: SearchItem[] = useMemo(() => {
+    const noteItems: SearchItem[] = studyNotes.map((n) => ({
+      id: n.id,
+      title: n.title,
+      subtitle: n.shortDesc,
+      type: "note",
+      url: `/notes/${n.slug}`,
+      category: n.category,
+      badge: "Study Note",
+    }));
+
     const articleItems: SearchItem[] = articles.map((a) => ({
       id: a.id,
       title: a.title,
@@ -52,7 +63,7 @@ export function SearchModal() {
       type: "article",
       url: `/feed/${a.slug}`,
       category: a.category,
-      badge: "What's New",
+      badge: "Tech News",
     }));
 
     const roadmapItems: SearchItem[] = roadmaps.map((r) => ({
@@ -60,19 +71,9 @@ export function SearchModal() {
       title: r.title,
       subtitle: r.shortDesc,
       type: "roadmap",
-      url: `/learn/${r.slug}`,
+      url: `/roadmaps/${r.slug}`,
       category: r.level,
       badge: "Roadmap",
-    }));
-
-    const projectItems: SearchItem[] = projects.map((p) => ({
-      id: p.id,
-      title: p.title,
-      subtitle: p.shortDesc,
-      type: "project",
-      url: `/build/${p.slug}`,
-      category: p.level,
-      badge: "Project Blueprint",
     }));
 
     const memeItems: SearchItem[] = dynamicMemes.map((m) => ({
@@ -85,7 +86,7 @@ export function SearchModal() {
       badge: "Dev Meme",
     }));
 
-    return [...articleItems, ...roadmapItems, ...projectItems, ...memeItems];
+    return [...noteItems, ...articleItems, ...roadmapItems, ...memeItems];
   }, [dynamicMemes]);
 
   const fuse = useMemo(() => {
@@ -194,7 +195,9 @@ export function SearchModal() {
                   <div className="flex items-start gap-3 min-w-0">
                     <div
                       className={`p-2 rounded-lg shrink-0 mt-0.5 ${
-                        item.type === "article"
+                        item.type === "note"
+                          ? "bg-pink-500/10 text-pink-500 dark:text-pink-400"
+                          : item.type === "article"
                           ? "bg-blue-500/10 text-blue-500 dark:text-blue-400"
                           : item.type === "roadmap"
                           ? "bg-cyan-500/10 text-cyan-500 dark:text-cyan-400"
@@ -203,9 +206,9 @@ export function SearchModal() {
                           : "bg-amber-500/10 text-amber-500 dark:text-amber-400"
                       }`}
                     >
+                      {item.type === "note" && <BookOpen className="w-4 h-4" />}
                       {item.type === "article" && <Sparkles className="w-4 h-4" />}
-                      {item.type === "roadmap" && <BookOpen className="w-4 h-4" />}
-                      {item.type === "project" && <Code2 className="w-4 h-4" />}
+                      {item.type === "roadmap" && <Code2 className="w-4 h-4" />}
                       {item.type === "meme" && <Laugh className="w-4 h-4" />}
                     </div>
                     <div className="min-w-0">

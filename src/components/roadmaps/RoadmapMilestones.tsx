@@ -13,7 +13,14 @@ interface RoadmapMilestonesProps {
 export function RoadmapMilestones({ roadmapId, milestones }: RoadmapMilestonesProps) {
   const storageKey = `pnp_roadmap_${roadmapId}_completed`;
   const [completedIds, setCompletedIds] = useState<string[]>([]);
+  const [expandedProjectIds, setExpandedProjectIds] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
+
+  const toggleProject = (id: string) => {
+    setExpandedProjectIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -174,7 +181,74 @@ export function RoadmapMilestones({ roadmapId, milestones }: RoadmapMilestonesPr
               </div>
 
               {/* Recommended Project Blueprint */}
-              {milestone.recommendedProject && (
+              {milestone.projectBlueprint ? (
+                <div className="mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 dark:bg-cyan-500/10 overflow-hidden">
+                  <div 
+                    onClick={() => toggleProject(milestone.id)}
+                    className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-cyan-500/10 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Code2 className="w-4 h-4 text-cyan-500 shrink-0" />
+                      <span className="text-xs font-bold text-slate-900 dark:text-white">
+                        Hands-On Project: <span className="text-cyan-600 dark:text-cyan-400">{milestone.projectBlueprint.title}</span>
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-semibold text-cyan-600 dark:text-cyan-400 underline">
+                      {expandedProjectIds.includes(milestone.id) ? "Hide Blueprint ▲" : "View Blueprint ▼"}
+                    </span>
+                  </div>
+
+                  {expandedProjectIds.includes(milestone.id) && (
+                    <div className="p-4 pt-1 border-t border-cyan-500/15 space-y-3 text-xs">
+                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                        {milestone.projectBlueprint.objective}
+                      </p>
+
+                      {/* Tech Stack */}
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="font-bold text-slate-500 text-[10px] uppercase">Stack:</span>
+                        {milestone.projectBlueprint.stack.map((s) => (
+                          <span key={s} className="px-2 py-0.5 rounded bg-slate-900 text-cyan-300 text-[10px] font-mono border border-slate-700">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Architecture Flow */}
+                      <div className="p-3 rounded-lg bg-slate-900 text-slate-200 font-mono text-[11px] overflow-x-auto whitespace-pre border border-slate-800">
+                        <span className="text-cyan-400 font-bold block mb-1">Architecture Flow:</span>
+                        {milestone.projectBlueprint.architecture}
+                      </div>
+
+                      {/* Features */}
+                      <div>
+                        <span className="font-bold text-slate-500 text-[10px] uppercase block mb-1">Key Deliverables:</span>
+                        <ul className="space-y-1">
+                          {milestone.projectBlueprint.features.map((f, fIdx) => (
+                            <li key={fIdx} className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                              <span className="w-1.5 h-1.5 rounded-full bg-cyan-500" />
+                              <span>{f}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Starter Code Snippet */}
+                      {milestone.projectBlueprint.starterSnippet && (
+                        <div className="rounded-lg overflow-hidden border border-slate-800 bg-[#0d1117]">
+                          <div className="px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-[10px] font-mono text-slate-400 flex items-center justify-between">
+                            <span>{milestone.projectBlueprint.starterSnippet.filename}</span>
+                            <span>{milestone.projectBlueprint.starterSnippet.language}</span>
+                          </div>
+                          <pre className="p-3 text-[11px] font-mono text-slate-300 overflow-x-auto">
+                            <code>{milestone.projectBlueprint.starterSnippet.code}</code>
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : milestone.recommendedProject ? (
                 <div className="mt-4 p-3 rounded-xl bg-cyan-500/5 dark:bg-cyan-500/10 border border-cyan-500/15 flex items-start gap-2 text-xs">
                   <Code2 className="w-4 h-4 text-cyan-500 shrink-0 mt-0.5" />
                   <div>
@@ -186,7 +260,7 @@ export function RoadmapMilestones({ roadmapId, milestones }: RoadmapMilestonesPr
                     </span>
                   </div>
                 </div>
-              )}
+              ) : null}
 
               {/* Curated Resources */}
               {milestone.resources.length > 0 && (

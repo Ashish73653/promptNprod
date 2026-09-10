@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/content";
 import { roadmaps } from "@/data/roadmaps";
-import { projects } from "@/data/projects";
+import { studyNotes } from "@/data/notes";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://promptnprod.dev";
@@ -20,22 +20,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/learn`,
+      url: `${baseUrl}/notes`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/roadmaps`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/build`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/scorecard`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
     },
     {
       url: `${baseUrl}/memes`,
@@ -59,19 +53,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  const noteRoutes: MetadataRoute.Sitemap = studyNotes.map((n) => ({
+    url: `${baseUrl}/notes/${n.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.9,
+  }));
+
   const roadmapRoutes: MetadataRoute.Sitemap = roadmaps.map((r) => ({
-    url: `${baseUrl}/learn/${r.slug}`,
+    url: `${baseUrl}/roadmaps/${r.slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.85,
   }));
 
-  const projectRoutes: MetadataRoute.Sitemap = projects.map((p) => ({
-    url: `${baseUrl}/build/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly",
-    priority: 0.85,
-  }));
-
-  return [...staticRoutes, ...articleRoutes, ...roadmapRoutes, ...projectRoutes];
+  return [...staticRoutes, ...noteRoutes, ...articleRoutes, ...roadmapRoutes];
 }
