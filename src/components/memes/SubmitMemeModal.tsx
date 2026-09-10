@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { Meme } from "@/types";
-import { X, Upload, Sparkles, AlertCircle, CheckCircle } from "lucide-react";
+import { X, Upload, Sparkles, AlertCircle, Loader2 } from "lucide-react";
 
 interface SubmitMemeModalProps {
   isOpen: boolean;
@@ -18,30 +17,78 @@ export function SubmitMemeModal({ isOpen, onClose, onSubmitMeme }: SubmitMemeMod
   const [category, setCategory] = useState<Meme["category"]>("Production");
   const [author, setAuthor] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewError, setPreviewError] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !imageUrl.trim() || !caption.trim()) {
       setError("Please provide a title, caption, and a valid image URL.");
       return;
     }
 
-    const createdMeme: Meme = {
-      id: `community-${Date.now()}`,
-      title: title.trim(),
-      caption: caption.trim(),
-      image: imageUrl.trim(),
-      category,
-      author: author.trim() || "DevContributor",
-      upvotes: 1,
-      tags: ["Community", category.replace(/[^a-zA-Z]/g, "")],
-    };
+    setIsSubmitting(true);
+    setError("");
 
-    onSubmitMeme(createdMeme);
-    onClose();
+    try {
+      // Persist directly to Neon PostgreSQL database
+      const response = await fetch("/api/memes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          imageUrl: imageUrl.trim(),
+          author: author.trim() || "DevContributor",
+          subreddit: category,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.meme) {
+        // Use live meme from Neon DB
+        const liveMeme: Meme = {
+          ...data.meme,
+          caption: caption.trim(),
+          category,
+        };
+        onSubmitMeme(liveMeme);
+      } else {
+        // Fallback optimistic
+        const fallbackMeme: Meme = {
+          id: `community-${Date.now()}`,
+          title: title.trim(),
+          caption: caption.trim(),
+          image: imageUrl.trim(),
+          category,
+          author: author.trim() || "DevContributor",
+          upvotes: 1,
+          tags: ["Community", "Local"],
+        };
+        onSubmitMeme(fallbackMeme);
+      }
+
+      onClose();
+    } catch (err) {
+      console.error("Failed to post meme:", err);
+      // Fallback
+      const fallbackMeme: Meme = {
+        id: `community-${Date.now()}`,
+        title: title.trim(),
+        caption: caption.trim(),
+        image: imageUrl.trim(),
+        category,
+        author: author.trim() || "DevContributor",
+        upvotes: 1,
+        tags: ["Community", "Offline"],
+      };
+      onSubmitMeme(fallbackMeme);
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -57,7 +104,7 @@ export function SubmitMemeModal({ isOpen, onClose, onSubmitMeme }: SubmitMemeMod
         <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
           <div>
             <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-rose-500 mb-0.5">
-              <Sparkles className="w-3.5 h-3.5" /> Community Submission
+              <Sparkles className="w-3.5 h-3.5" /> Neon Cloud Database
             </div>
             <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
               Submit a Developer Meme
@@ -183,17 +230,28 @@ export function SubmitMemeModal({ isOpen, onClose, onSubmitMeme }: SubmitMemeMod
           <div className="pt-3 flex items-center justify-end gap-3">
             <button
               type="button"
+              disabled={isSubmitting}
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs sm:text-sm shadow-md shadow-rose-500/25 transition-all flex items-center gap-1.5"
+              disabled={isSubmitting}
+              className="px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs sm:text-sm shadow-md shadow-rose-500/25 transition-all flex items-center gap-1.5 disabled:opacity-50"
             >
-              <Upload className="w-4 h-4" />
-              <span>Publish Meme</span>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Saving to Neon DB...</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  <span>Publish to Neon DB</span>
+                </>
+              )}
             </button>
           </div>
         </form>

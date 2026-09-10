@@ -75,8 +75,8 @@ The developer ecosystem is filled with AI hype and endless text threads that lea
 graph TD
     S1["✅ Stage 1: Core Foundation (COMPLETED)"]
     S2["✅ Stage 2: Content Hub, Notion Notes & Social (COMPLETED)"]
-    S3["⏳ Stage 3: Live Postgres & Cloud Data Layer (NEXT)"]
-    S4["⏳ Stage 4: Automated Tech News Ingestion"]
+    S3["✅ Stage 3: Live Postgres & Cloud Data Layer (COMPLETED)"]
+    S4["⏳ Stage 4: Automated Tech News Ingestion (NEXT)"]
     S5["⏳ Stage 5: AI Intelligence & pgvector Semantic Search"]
     S6["⏳ Stage 6: User Authentication & Personalization"]
     S7["⏳ Stage 7: Custom Domain Deployment & Hardening"]
@@ -89,7 +89,7 @@ graph TD
     S6 --> S7
 ```
 
-### ✅ What is Done (Stages 1 & 2 Completed)
+### ✅ What is Done (Stages 1, 2 & 3 Completed)
 
 | Feature Area | Status | Key Deliverables |
 |---|:---:|---|
@@ -98,21 +98,18 @@ graph TD
 | **Notion Study Notes** | ✅ **Done** | Dedicated `/notes` directory with 5 preloaded visual cheatsheets, Notion callouts, code blocks, and `/api/notion/sync` API route. |
 | **Interactive Roadmaps** | ✅ **Done** | `/roadmaps` with 4 tracks, milestone checkboxes with confetti, and expandable **"Hands-On Project Blueprints"**. |
 | **Real Instagram Showcase** | ✅ **Done** | Authentic cover thumbnails for `@promptnprod` reels and posts, interactive on-site lightbox embed player. |
-| **Reddit Meme Auto-Sync** | ✅ **Done** | Live sync with `r/ProgrammerHumor`, Load More pagination, and Community submission modal. |
-| **Visual Article Studio** | ✅ **Done** | `/admin/editor` markdown authoring interface with live rendering and `.md` file export. |
+| **Neon Serverless Postgres** | ✅ **Done** | High-performance pooled PostgreSQL on Neon (`promptnprod` database) with zero idle-pause penalty. |
+| **Drizzle ORM Data Layer** | ✅ **Done** | Type-safe schema for `memes`, `reactions`, and `comments` with automatic schema pushes (`drizzle-kit push`). |
+| **Cloud Meme Persistence** | ✅ **Done** | `/api/memes` route handler: user-submitted community memes persist permanently to Neon alongside live Reddit sync. |
+| **Atomic Reactions & Upvotes**| ✅ **Done** | `/api/reactions` route handler: persistent upvotes and helpful reactions across all study notes and memes. |
+| **Live Community Discussions**| ✅ **Done** | `/api/comments` route handler & `CommentsSection`: real-time discussion threads on study notes with zero login required. |
 | **Mobile Responsiveness** | ✅ **Done** | Tested and verified at 390px mobile viewports (iOS Safari / Android Chrome friendly). |
 
 ---
 
 ### ⏳ What is Left (Upcoming Roadmap)
 
-#### 🔄 Stage 3: Live Postgres & Cloud Persistence *(Next Immediate Step)*
-* [ ] Provision serverless Postgres database on **Supabase** or **Neon**.
-* [ ] Type-safe database schema using **Drizzle ORM**.
-* [ ] Move community meme submissions, bookmarks, and upvotes from browser `localStorage` to global database storage.
-* [ ] Real-time upvote counters synchronized across all concurrent visitors.
-
-#### 🔄 Stage 4: Automated Tech News Ingestion
+#### 🔄 Stage 4: Automated Tech News Ingestion *(Next Immediate Step)*
 * [ ] Scheduled serverless cron workers (Vercel Cron / GitHub Actions).
 * [ ] Connectors for **GitHub Releases API**, **Hacker News**, and engineering RSS feeds.
 * [ ] Deduplication engine that groups related stories into a draft editorial queue.

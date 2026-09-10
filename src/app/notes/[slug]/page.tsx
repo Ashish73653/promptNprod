@@ -19,6 +19,8 @@ import {
   BookOpen
 } from "lucide-react";
 import { InstagramIcon } from "@/components/ui/Icons";
+import { ReactionButton } from "@/components/common/ReactionButton";
+import { CommentsSection } from "@/components/common/CommentsSection";
 
 export function generateStaticParams() {
   return studyNotes.map((note) => ({
@@ -109,6 +111,14 @@ export default async function NoteDetailPage({ params }: PageProps) {
                 <ExternalLink className="w-3 h-3" />
               </a>
             )}
+
+            <div className="sm:ml-auto">
+              <ReactionButton
+                targetId={note.slug}
+                targetType="note"
+                label="Helpful"
+              />
+            </div>
           </div>
         </div>
 
@@ -224,6 +234,30 @@ export default async function NoteDetailPage({ params }: PageProps) {
             );
           })}
         </div>
+
+        {/* Feedback & Neon Cloud Upvote */}
+        <div className="mt-12 p-6 sm:p-7 rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          <div>
+            <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+              Found this architecture note helpful?
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Upvotes persist directly to Neon Postgres and highlight the most practical patterns.
+            </p>
+          </div>
+          <ReactionButton
+            targetId={note.slug}
+            targetType="note"
+            label="Upvote This Note"
+          />
+        </div>
+
+        {/* Live Discussion Thread (Neon Postgres) */}
+        <CommentsSection
+          targetId={note.slug}
+          targetType="note"
+          title={`Community Discussion (${note.title})`}
+        />
 
         {/* Footer Next Steps */}
         <div className="mt-14 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">

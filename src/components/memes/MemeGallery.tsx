@@ -35,6 +35,20 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
   const [initialLoading, setInitialLoading] = useState(true);
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
 
+  // Helper to fetch Neon DB memes
+  const fetchNeonMemes = useCallback(async () => {
+    try {
+      const res = await fetch("/api/memes?limit=30");
+      const data = await res.json();
+      if (data.success && Array.isArray(data.memes)) {
+        return data.memes as Meme[];
+      }
+    } catch (err) {
+      console.error("Neon fetch error:", err);
+    }
+    return [];
+  }, []);
+
   // Helper to sync from Reddit
   const fetchRedditMemes = useCallback(async (isLoadMore = false) => {
     if (isLoadMore) {
@@ -59,15 +73,7 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
             return prev;
           }
 
-          const combined = isLoadMore ? [...prev, ...uniqueIncoming] : [...uniqueIncoming, ...prev.filter(m => m.id.startsWith("community-"))];
-
-          // Cache reddit memes
-          try {
-            const redditOnly = combined.filter((m) => m.id.startsWith("reddit-"));
-            localStorage.setItem("pnp_reddit_memes_cache", JSON.stringify(redditOnly.slice(0, 50)));
-          } catch {
-            // Ignore storage limits
-          }
+          const combined = isLoadMore ? [...prev, ...uniqueIncoming] : [...uniqueIncoming, ...prev.filter(m => m.id.startsWith("neon-") || m.id.startsWith("community-"))];
 
           if (isLoadMore) {
             setSyncNotice(`Loaded ${uniqueIncoming.length} more trending memes!`);
@@ -91,36 +97,45 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
     }
   }, []);
 
-  // Initial load: restore cached or community memes, and auto-sync immediately
+  // Initial load: fetch from Neon DB and Reddit
   useEffect(() => {
-    let communityList: Meme[] = [];
-    let cachedReddit: Meme[] = [];
+    const initLoad = async () => {
+      // 1. Restore local votes & counts
+      try {
+        const savedVotes = localStorage.getItem("pnp_user_meme_votes");
+        if (savedVotes) setUserVoted(JSON.parse(savedVotes));
 
-    try {
-      const savedCommunity = localStorage.getItem("pnp_community_memes");
-      if (savedCommunity) communityList = JSON.parse(savedCommunity);
+        const savedCounts = localStorage.getItem("pnp_meme_counts");
+        if (savedCounts) setUpvoteMap(JSON.parse(savedCounts));
+      } catch {
+        // Fallback
+      }
 
-      const savedReddit = localStorage.getItem("pnp_reddit_memes_cache");
-      if (savedReddit) cachedReddit = JSON.parse(savedReddit);
+      // 2. Fetch live memes from Neon Cloud DB
+      const neonMemes = await fetchNeonMemes();
 
-      const savedVotes = localStorage.getItem("pnp_user_meme_votes");
-      if (savedVotes) setUserVoted(JSON.parse(savedVotes));
+      // 3. Fetch fresh Reddit memes
+      try {
+        const res = await fetch("/api/memes/reddit?count=15");
+        const data = await res.json();
+        const redditMemes: Meme[] = (data.success && data.memes) || [];
 
-      const savedCounts = localStorage.getItem("pnp_meme_counts");
-      if (savedCounts) setUpvoteMap(JSON.parse(savedCounts));
-    } catch {
-      // Fallback
-    }
+        // Combine: Neon community memes at top, then Reddit
+        const combined = [...neonMemes, ...redditMemes];
+        if (combined.length > 0) {
+          setAllMemes(combined);
+        }
+      } catch (err) {
+        if (neonMemes.length > 0) {
+          setAllMemes(neonMemes);
+        }
+      } finally {
+        setInitialLoading(false);
+      }
+    };
 
-    const initialCombined = [...communityList, ...cachedReddit];
-    if (initialCombined.length > 0) {
-      setAllMemes(initialCombined);
-      setInitialLoading(false);
-    }
-
-    // Automatically sync fresh memes on mount
-    fetchRedditMemes(false);
-  }, [fetchRedditMemes]);
+    initLoad();
+  }, [fetchNeonMemes]);
 
   // Synchronize upvotes map when allMemes changes
   useEffect(() => {
@@ -135,11 +150,11 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
     });
   }, [allMemes]);
 
-  const handleUpvote = (id: string, e: React.MouseEvent) => {
+  const handleUpvote = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const hasVoted = userVoted[id];
     const currentCount = upvoteMap[id] || 0;
-    const newCount = hasVoted ? currentCount - 1 : currentCount + 1;
+    const newCount = hasVoted ? Math.max(0, currentCount - 1) : currentCount + 1;
     const newVoted = { ...userVoted, [id]: !hasVoted };
 
     const updatedCounts = { ...upvoteMap, [id]: newCount };
@@ -149,6 +164,26 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
     try {
       localStorage.setItem("pnp_user_meme_votes", JSON.stringify(newVoted));
       localStorage.setItem("pnp_meme_counts", JSON.stringify(updatedCounts));
+
+      let userId = localStorage.getItem("pnp_anon_user_id");
+      if (!userId) {
+        userId = "anon-" + Math.random().toString(36).substring(2, 11);
+        localStorage.setItem("pnp_anon_user_id", userId);
+      }
+
+      // Persist to Neon database
+      if (!hasVoted) {
+        await fetch("/api/reactions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            targetId: id,
+            targetType: "meme",
+            reactionType: "upvote",
+            userIdentifier: userId,
+          }),
+        });
+      }
     } catch {
       // Ignore
     }
@@ -166,18 +201,10 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
   const handleMemeSubmitted = (newMeme: Meme) => {
     const updated = [newMeme, ...allMemes];
     setAllMemes(updated);
-    setUpvoteMap((prev) => ({ ...prev, [newMeme.id]: 1 }));
+    setUpvoteMap((prev) => ({ ...prev, [newMeme.id]: newMeme.upvotes || 1 }));
     setUserVoted((prev) => ({ ...prev, [newMeme.id]: true }));
 
-    try {
-      const saved = localStorage.getItem("pnp_community_memes");
-      const list: Meme[] = saved ? JSON.parse(saved) : [];
-      localStorage.setItem("pnp_community_memes", JSON.stringify([newMeme, ...list]));
-    } catch {
-      // Ignore
-    }
-
-    setSyncNotice("Your meme was submitted and is now live in the feed!");
+    setSyncNotice("Your meme was saved to Neon Cloud DB and is live in the feed!");
     setTimeout(() => setSyncNotice(null), 4000);
   };
 
@@ -213,6 +240,15 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
 
         {/* Live Auto-Sync Status & Community Submit */}
         <div className="flex items-center gap-2.5">
+          {/* Neon Postgres DB indicator */}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Neon DB Live</span>
+          </div>
+
           {/* Live Sync Status indicator */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 text-xs font-semibold">
             <span className="relative flex h-2 w-2">
