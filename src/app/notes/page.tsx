@@ -23,6 +23,7 @@ import {
 import { StudyNoteDb, NoteRequestDb } from "@/db";
 import { PdfViewerModal } from "@/components/notes/PdfViewerModal";
 import { RequestNoteModal } from "@/components/notes/RequestNoteModal";
+import { NewsletterBox } from "@/components/common/NewsletterBox";
 
 export default function NotesPage() {
   const [notes, setNotes] = useState<StudyNoteDb[]>([]);
@@ -390,6 +391,15 @@ export default function NotesPage() {
             </div>
           )}
         </section>
+
+        {/* Newsletter Box */}
+        <div className="mt-14">
+          <NewsletterBox
+            source="notes_vault"
+            title="Get Notified When Requested Notes Are Published"
+            subtitle="Never miss a revision cheatsheet. Enter your email to be the first to know when community-requested notes and architectural breakdowns go live."
+          />
+        </div>
 
         {/* In-Page Embedded PDF Modal */}
         {activePdf && (

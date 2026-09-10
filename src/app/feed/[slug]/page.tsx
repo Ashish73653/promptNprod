@@ -14,6 +14,8 @@ import {
   ChevronRight,
   Code
 } from "lucide-react";
+import { ShareButtons } from "@/components/common/ShareButtons";
+import { NewsletterBox } from "@/components/common/NewsletterBox";
 
 export function generateStaticParams() {
   return getAllArticles().map((article) => ({
@@ -35,9 +37,29 @@ export async function generateMetadata({
     };
   }
 
+  const ogUrl = `/api/og?title=${encodeURIComponent(article.title)}&category=${encodeURIComponent(article.category)}&type=Tech%20Radar`;
+
   return {
     title: `${article.title} | Prompt N Prod Radar`,
     description: article.subtitle || article.summary,
+    openGraph: {
+      title: `${article.title} | Prompt N Prod`,
+      description: article.subtitle || article.summary,
+      images: [
+        {
+          url: ogUrl,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${article.title} | Prompt N Prod`,
+      description: article.subtitle || article.summary,
+      images: [ogUrl],
+    },
   };
 }
 
@@ -92,8 +114,8 @@ export default async function ArticleDetailPage({
             {article.subtitle}
           </p>
 
-          {/* Author bar */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+          {/* Author bar & Share */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-200 text-sm">
                 {article.author.name[0]}
@@ -107,6 +129,8 @@ export default async function ArticleDetailPage({
                 </p>
               </div>
             </div>
+
+            <ShareButtons title={article.title} category={article.category} />
           </div>
         </header>
 
@@ -207,6 +231,15 @@ export default async function ArticleDetailPage({
             ))}
           </ul>
         </section>
+
+        {/* Newsletter Signup Box */}
+        <div className="mb-12">
+          <NewsletterBox
+            source={`article_${article.slug}`}
+            title={`Stay ahead of tech shifts like ${article.title}`}
+            subtitle="Subscribe to Prompt N Prod Tech Radar for weekly architectural breakdowns and production insights."
+          />
+        </div>
 
         {/* Bottom CTA to roadmaps */}
         <div className="flex flex-col sm:flex-row items-center justify-between p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md gap-4">

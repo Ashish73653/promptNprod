@@ -1,24 +1,75 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { db, studyNotes as studyNotesTable } from "@/db";
 import { eq } from "drizzle-orm";
 import { 
   ArrowLeft, 
   ExternalLink, 
-  Download, 
-  Sparkles, 
-  Calendar, 
   BookOpen, 
-  Share2,
   FileText
 } from "lucide-react";
 import { getGoogleDriveEmbedUrl, getGoogleDriveDownloadUrl } from "@/lib/drive";
 import { ReactionButton } from "@/components/common/ReactionButton";
 import { CommentsSection } from "@/components/common/CommentsSection";
+import { ShareButtons } from "@/components/common/ShareButtons";
+import { NewsletterBox } from "@/components/common/NewsletterBox";
+import { NoteDownloadButton } from "@/components/notes/NoteDownloadButton";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  if (!db) {
+    return {
+      title: "Study Note | Prompt N Prod",
+    };
+  }
+
+  try {
+    const rows = await db
+      .select()
+      .from(studyNotesTable)
+      .where(eq(studyNotesTable.slug, slug))
+      .limit(1);
+
+    if (rows.length > 0) {
+      const note = rows[0];
+      const ogUrl = `/api/og?title=${encodeURIComponent(note.title)}&category=${encodeURIComponent(note.category)}&type=Study%20Note`;
+      return {
+        title: `${note.title} - Free Developer Study Notes | Prompt N Prod`,
+        description: note.description,
+        openGraph: {
+          title: `${note.title} | Prompt N Prod Study Notes`,
+          description: note.description,
+          images: [
+            {
+              url: ogUrl,
+              width: 1200,
+              height: 630,
+              alt: note.title,
+            },
+          ],
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: `${note.title} | Prompt N Prod`,
+          description: note.description,
+          images: [ogUrl],
+        },
+      };
+    }
+  } catch (err) {
+    console.error("Error generating note metadata:", err);
+  }
+
+  return {
+    title: "Study Note | Prompt N Prod",
+  };
 }
 
 export default async function NoteDetailPage({ params }: PageProps) {
@@ -47,7 +98,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
   }
 
   const embedUrl = getGoogleDriveEmbedUrl(note.driveUrl);
-  const downloadUrl = getGoogleDriveDownloadUrl(note.driveUrl);
+  const downloadUrl = getGoogleDriveDownloadUrl(note.driveUrl) || note.driveUrl;
 
   return (
     <article className="min-h-screen py-10 sm:py-16">
@@ -90,17 +141,13 @@ export default async function NoteDetailPage({ params }: PageProps) {
               </span>
             </div>
 
-            <div className="flex items-center gap-2.5">
-              {/* Direct Download Button */}
-              <a
-                href={downloadUrl || note.driveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download PDF</span>
-              </a>
+            <div className="flex flex-wrap items-center gap-2.5">
+              {/* Direct Download Button with Vercel Analytics tracking */}
+              <NoteDownloadButton
+                slug={note.slug}
+                title={note.title}
+                downloadUrl={downloadUrl}
+              />
 
               {/* Open in Google Drive */}
               <a
@@ -118,6 +165,12 @@ export default async function NoteDetailPage({ params }: PageProps) {
                 targetId={note.slug}
                 targetType="note"
                 label="Helpful"
+              />
+
+              {/* Social Share Component */}
+              <ShareButtons
+                title={note.title}
+                category={note.category}
               />
             </div>
           </div>
@@ -194,6 +247,15 @@ export default async function NoteDetailPage({ params }: PageProps) {
           targetType="note"
           title={`Discussion & Questions (${note.title})`}
         />
+
+        {/* Newsletter Signup Box for New Notes */}
+        <div className="mt-12">
+          <NewsletterBox
+            source={`note_${note.slug}`}
+            title={`Get notified when new ${note.category} notes drop`}
+            subtitle="Subscribe to get fresh revision cheatsheets, interview questions, and architecture blueprints directly in your inbox."
+          />
+        </div>
 
         {/* Footer Next Steps */}
         <div className="mt-14 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">

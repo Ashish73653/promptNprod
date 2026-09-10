@@ -5,6 +5,7 @@ import { InstagramSection } from "@/components/home/InstagramSection";
 import { RoadmapSection } from "@/components/home/RoadmapSection";
 import { TrendingFeed } from "@/components/home/TrendingFeed";
 import { MemeStrip } from "@/components/home/MemeStrip";
+import { NewsletterBox } from "@/components/common/NewsletterBox";
 import { articles } from "@/data/articles";
 import { roadmaps } from "@/data/roadmaps";
 
@@ -28,6 +29,15 @@ export default function HomePage() {
 
       {/* 6. Developer Culture & Daily Dev Memes (Live Reddit Sync) */}
       <MemeStrip />
+
+      {/* 7. Lightweight Email Signup Box */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        <NewsletterBox
+          source="homepage"
+          title="Get Notified When New Notes & Roadmaps Drop"
+          subtitle="Join developers learning system architecture, cloud engineering, and modern web stacks with zero fluff."
+        />
+      </section>
     </div>
   );
 }

@@ -76,6 +76,15 @@ export const noteRequests = pgTable('note_requests', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Newsletter & Note Alert Subscribers
+export const subscribers = pgTable('subscribers', {
+  id: serial('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  source: text('source').notNull().default('website'), // 'footer' | 'notes' | 'roadmap'
+  status: text('status').notNull().default('active'), // 'active' | 'unsubscribed'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export type Meme = typeof memes.$inferSelect;
 export type NewMeme = typeof memes.$inferInsert;
 export type Reaction = typeof reactions.$inferSelect;
@@ -88,4 +97,7 @@ export type ArticleDb = typeof articles.$inferSelect;
 export type NewArticleDb = typeof articles.$inferInsert;
 export type NoteRequestDb = typeof noteRequests.$inferSelect;
 export type NewNoteRequestDb = typeof noteRequests.$inferInsert;
+export type SubscriberDb = typeof subscribers.$inferSelect;
+export type NewSubscriberDb = typeof subscribers.$inferInsert;
+
 

@@ -6,6 +6,7 @@ import { SearchProvider } from "@/components/providers/SearchContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SearchModal } from "@/components/search/SearchModal";
+import { Analytics } from "@vercel/analytics/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://promptnprod.dev"),
   title: {
     default: "Prompt N Prod | From Prompt to Production",
     template: "%s | Prompt N Prod",
@@ -87,6 +89,7 @@ export default function RootLayout({
               <Footer />
             </div>
             <SearchModal />
+            <Analytics />
           </SearchProvider>
         </ThemeProvider>
       </body>

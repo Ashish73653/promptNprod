@@ -1,9 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { roadmaps } from "@/data/roadmaps";
 import { RoadmapMilestones } from "@/components/roadmaps/RoadmapMilestones";
 import { ArrowLeft, Clock, Award, ChevronRight, Layers, Code2, Sparkles } from "lucide-react";
+import { ShareButtons } from "@/components/common/ShareButtons";
+import { NewsletterBox } from "@/components/common/NewsletterBox";
 
 export function generateStaticParams() {
   return roadmaps.map((r) => ({
@@ -13,6 +16,42 @@ export function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const roadmap = roadmaps.find((r) => r.slug === slug);
+
+  if (!roadmap) {
+    return {
+      title: "Roadmap Not Found | Prompt N Prod",
+    };
+  }
+
+  const ogUrl = `/api/og?title=${encodeURIComponent(roadmap.title)}&category=${encodeURIComponent(`${roadmap.level} • ${roadmap.badge}`)}&type=Roadmap`;
+
+  return {
+    title: `${roadmap.title} - Career Roadmap & Projects | Prompt N Prod`,
+    description: roadmap.description,
+    openGraph: {
+      title: `${roadmap.title} | Prompt N Prod Roadmap`,
+      description: roadmap.description,
+      images: [
+        {
+          url: ogUrl,
+          width: 1200,
+          height: 630,
+          alt: roadmap.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${roadmap.title} | Prompt N Prod`,
+      description: roadmap.description,
+      images: [ogUrl],
+    },
+  };
 }
 
 export default async function RoadmapDetailPage({ params }: PageProps) {
@@ -28,15 +67,19 @@ export default async function RoadmapDetailPage({ params }: PageProps) {
   return (
     <div className="min-h-screen py-10 sm:py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-8">
-          <Link href="/roadmaps" className="hover:text-cyan-500 flex items-center gap-1 transition-colors">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to All Roadmaps
-          </Link>
-          <ChevronRight className="w-3 h-3 text-slate-400" />
-          <span className="text-cyan-600 dark:text-cyan-400 font-medium truncate max-w-[240px] sm:max-w-none">
-            {roadmap.title}
-          </span>
+        {/* Navigation Breadcrumb & Share */}
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 mb-8">
+          <div className="flex items-center gap-2">
+            <Link href="/roadmaps" className="hover:text-cyan-500 flex items-center gap-1 transition-colors">
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to All Roadmaps
+            </Link>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <span className="text-cyan-600 dark:text-cyan-400 font-medium truncate max-w-[240px] sm:max-w-none">
+              {roadmap.title}
+            </span>
+          </div>
+
+          <ShareButtons title={roadmap.title} category={roadmap.level} />
         </div>
 
         {/* Roadmap Header */}
@@ -111,6 +154,15 @@ export default async function RoadmapDetailPage({ params }: PageProps) {
           </div>
           <RoadmapMilestones roadmapId={roadmap.id} milestones={roadmap.milestones} />
         </section>
+
+        {/* Newsletter Box */}
+        <div className="mt-12">
+          <NewsletterBox
+            source={`roadmap_${roadmap.slug}`}
+            title={`Get new engineering roadmaps & blueprints`}
+            subtitle="Subscribe to receive fresh architectural roadmaps, real-world capstone blueprints, and system design diagrams."
+          />
+        </div>
 
         {/* Bottom CTA to Notion Study Notes */}
         <div className="mt-14 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-blue-950/40 border border-cyan-500/20 flex flex-col sm:flex-row items-center justify-between gap-6">
