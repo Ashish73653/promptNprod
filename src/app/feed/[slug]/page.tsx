@@ -219,7 +219,7 @@ export default async function ArticleDetailPage({
             </p>
           </div>
           <Link
-            href="/learn"
+            href="/roadmaps"
             className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-semibold text-xs sm:text-sm shrink-0 shadow-md shadow-cyan-500/20 transition-all"
           >
             Explore Roadmaps →

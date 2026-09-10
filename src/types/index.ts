@@ -78,33 +78,6 @@ export interface RoadmapMilestone {
   };
 }
 
-export interface StudyNote {
-  id: string;
-  slug: string;
-  title: string;
-  shortDesc: string;
-  category: "AI & Agents" | "Databases & SQL" | "System Design" | "Full-Stack" | "Cloud & DevOps";
-  icon: string;
-  coverImage?: string;
-  readTime: string;
-  updatedAt: string;
-  tags: string[];
-  keyTakeaways: string[];
-  notionUrl?: string;
-  linkedReelUrl?: string;
-  sections: {
-    title: string;
-    type?: "text" | "callout" | "code" | "diagram" | "table";
-    content?: string | string[];
-    calloutType?: "note" | "tip" | "warning" | "success";
-    codeSnippet?: {
-      language: string;
-      code: string;
-      caption?: string;
-    };
-  }[];
-}
-
 export interface Roadmap {
   id: string;
   slug: string;
@@ -121,36 +94,6 @@ export interface Roadmap {
   targetRoles: string[];
 }
 
-export interface ProjectStep {
-  stepNumber: number;
-  title: string;
-  description: string;
-  codeSnippet?: {
-    filename: string;
-    language: string;
-    code: string;
-  };
-  proTip?: string;
-}
-
-export interface Project {
-  id: string;
-  slug: string;
-  title: string;
-  shortDesc: string;
-  description: string;
-  level: DifficultyLevel;
-  timeToBuild: string;
-  category: TechCategory;
-  stack: string[];
-  architectureOverview: string;
-  prerequisites: string[];
-  features: string[];
-  steps: ProjectStep[];
-  demoUrl?: string;
-  repoUrl?: string;
-}
-
 export interface Meme {
   id: string;
   title: string;
@@ -160,16 +103,4 @@ export interface Meme {
   upvotes: number;
   author: string;
   tags: string[];
-}
-
-export interface RoadmapCheckpoint {
-  phase: string;
-  checkpointNumber: number;
-  title: string;
-  status: "Live" | "In Progress" | "Upcoming" | "Planned";
-  duration: string;
-  summary: string;
-  techStack: string[];
-  keyDeliverable: string;
-  highlights: string[];
 }

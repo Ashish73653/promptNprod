@@ -114,22 +114,22 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/learn/full-stack-ai-engineer" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
+                <Link href="/roadmaps/full-stack-ai-engineer" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
                   Full-Stack AI Engineer
                 </Link>
               </li>
               <li>
-                <Link href="/learn/nextjs-modern-fullstack" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
+                <Link href="/roadmaps/nextjs-modern-fullstack" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
                   Next.js 16 Mastery
                 </Link>
               </li>
               <li>
-                <Link href="/learn/agentic-systems-architect" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
-                  Agentic Systems & MCP
+                <Link href="/roadmaps/agentic-systems-architect" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
+                  Agentic Systems &amp; MCP
                 </Link>
               </li>
               <li>
-                <Link href="/learn/cloud-native-production-hardening" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
+                <Link href="/roadmaps/cloud-native-production-hardening" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
                   Production Hardening
                 </Link>
               </li>

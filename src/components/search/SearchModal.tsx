@@ -7,9 +7,8 @@ import { Search, X, BookOpen, Sparkles, Code2, Laugh, ArrowRight, CornerDownLeft
 import { useSearch } from "../providers/SearchContext";
 import { articles } from "@/data/articles";
 import { roadmaps } from "@/data/roadmaps";
-import { projects } from "@/data/projects";
-import { studyNotes } from "@/data/notes";
 import { Meme } from "@/types";
+import { StudyNoteDb } from "@/db";
 
 interface SearchItem {
   id: string;
@@ -28,10 +27,21 @@ export function SearchModal() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [dynamicNotes, setDynamicNotes] = useState<StudyNoteDb[]>([]);
   const [dynamicMemes, setDynamicMemes] = useState<Meme[]>([]);
 
   useEffect(() => {
     if (isOpen) {
+      // Fetch live notes from Neon DB for search
+      fetch("/api/notes")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && Array.isArray(data.notes)) {
+            setDynamicNotes(data.notes);
+          }
+        })
+        .catch(() => {});
+
       try {
         const community = localStorage.getItem("pnp_community_memes");
         const reddit = localStorage.getItem("pnp_reddit_memes_cache");
@@ -46,10 +56,10 @@ export function SearchModal() {
 
   // Compile search items
   const allItems: SearchItem[] = useMemo(() => {
-    const noteItems: SearchItem[] = studyNotes.map((n) => ({
-      id: n.id,
+    const noteItems: SearchItem[] = dynamicNotes.map((n) => ({
+      id: String(n.id),
       title: n.title,
-      subtitle: n.shortDesc,
+      subtitle: n.description,
       type: "note",
       url: `/notes/${n.slug}`,
       category: n.category,
