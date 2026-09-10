@@ -64,6 +64,18 @@ export const articles = pgTable('articles', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Community Requested Notes: Where visitors can ask for notes/cheatsheets they want
+export const noteRequests = pgTable('note_requests', {
+  id: serial('id').primaryKey(),
+  topic: text('topic').notNull(),
+  category: text('category').notNull().default('General'),
+  details: text('details'), // context, exam name, subtopics
+  userContact: text('user_contact'), // optional name, email, or handle
+  upvotes: integer('upvotes').notNull().default(1),
+  status: text('status').notNull().default('pending'), // 'pending' | 'in_progress' | 'fulfilled'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export type Meme = typeof memes.$inferSelect;
 export type NewMeme = typeof memes.$inferInsert;
 export type Reaction = typeof reactions.$inferSelect;
@@ -74,3 +86,6 @@ export type StudyNoteDb = typeof studyNotes.$inferSelect;
 export type NewStudyNoteDb = typeof studyNotes.$inferInsert;
 export type ArticleDb = typeof articles.$inferSelect;
 export type NewArticleDb = typeof articles.$inferInsert;
+export type NoteRequestDb = typeof noteRequests.$inferSelect;
+export type NewNoteRequestDb = typeof noteRequests.$inferInsert;
+
