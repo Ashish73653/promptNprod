@@ -80,7 +80,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/notes" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
-                  Study Notes (Notion)
+                  Study Notes &amp; PDFs
                 </Link>
               </li>
               <li>

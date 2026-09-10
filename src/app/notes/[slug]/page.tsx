@@ -1,32 +1,21 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import { studyNotes } from "@/data/notes";
+import { db, studyNotes as studyNotesTable } from "@/db";
+import { eq } from "drizzle-orm";
 import { 
   ArrowLeft, 
-  Clock, 
-  Calendar, 
-  Tag, 
   ExternalLink, 
-  Play, 
-  Share2, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Lightbulb, 
-  Info,
-  Sparkles,
-  BookOpen
+  Download, 
+  Sparkles, 
+  Calendar, 
+  BookOpen, 
+  Share2,
+  FileText
 } from "lucide-react";
-import { InstagramIcon } from "@/components/ui/Icons";
+import { getGoogleDriveEmbedUrl, getGoogleDriveDownloadUrl } from "@/lib/drive";
 import { ReactionButton } from "@/components/common/ReactionButton";
 import { CommentsSection } from "@/components/common/CommentsSection";
-
-export function generateStaticParams() {
-  return studyNotes.map((note) => ({
-    slug: note.slug,
-  }));
-}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -34,15 +23,35 @@ interface PageProps {
 
 export default async function NoteDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const note = studyNotes.find((n) => n.slug === slug);
+
+  let note = null;
+
+  if (db) {
+    try {
+      const rows = await db
+        .select()
+        .from(studyNotesTable)
+        .where(eq(studyNotesTable.slug, slug))
+        .limit(1);
+
+      if (rows.length > 0) {
+        note = rows[0];
+      }
+    } catch (err) {
+      console.error("Error fetching note by slug:", err);
+    }
+  }
 
   if (!note) {
     notFound();
   }
 
+  const embedUrl = getGoogleDriveEmbedUrl(note.driveUrl);
+  const downloadUrl = getGoogleDriveDownloadUrl(note.driveUrl);
+
   return (
     <article className="min-h-screen py-10 sm:py-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between mb-8">
           <Link
@@ -53,66 +62,58 @@ export default async function NoteDetailPage({ params }: PageProps) {
             <span>Back to All Study Notes</span>
           </Link>
 
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-              {note.category}
-            </span>
-          </div>
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+            {note.category}
+          </span>
         </div>
 
-        {/* Notion-Style Document Header */}
-        <div className="mb-10">
-          {/* Cover Art Banner if available */}
-          {note.coverImage && (
-            <div className="relative aspect-[21/9] sm:aspect-[24/9] w-full rounded-3xl overflow-hidden mb-6 bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
-              <Image
-                src={note.coverImage}
-                alt={note.title}
-                fill
-                priority
-                sizes="(max-width: 896px) 100vw, 896px"
-                className="object-cover object-center"
-              />
-            </div>
-          )}
-
-          {/* Large Notion Page Icon */}
-          <div className="text-4xl sm:text-5xl mb-4 leading-none inline-block p-3 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-            {note.icon}
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+        {/* Note Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
             {note.title}
           </h1>
 
-          <p className="mt-4 text-base sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-            {note.shortDesc}
+          <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+            {note.description}
           </p>
 
-          {/* Metadata Row */}
-          <div className="flex flex-wrap items-center gap-4 mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-slate-400" />
-              <span>{note.updatedAt}</span>
+          {/* Metadata & Quick Action Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-mono">
+              {note.pagesCount && <span>{note.pagesCount} Pages</span>}
+              {note.fileSize && <span>• {note.fileSize}</span>}
+              <span>
+                • Added {new Date(note.createdAt).toLocaleDateString(undefined, {
+                  month: "short",
+                  year: "numeric",
+                })}
+              </span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-slate-400" />
-              <span>{note.readTime}</span>
-            </div>
-            {note.linkedReelUrl && (
+
+            <div className="flex items-center gap-2.5">
+              {/* Direct Download Button */}
               <a
-                href={note.linkedReelUrl}
+                href={downloadUrl || note.driveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-pink-500 font-semibold hover:underline"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
               >
-                <InstagramIcon className="w-3.5 h-3.5" />
-                <span>Watch Reel on Instagram</span>
-                <ExternalLink className="w-3 h-3" />
+                <Download className="w-4 h-4" />
+                <span>Download PDF</span>
               </a>
-            )}
 
-            <div className="sm:ml-auto">
+              {/* Open in Google Drive */}
+              <a
+                href={note.driveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold border border-slate-200 dark:border-slate-700 transition-colors"
+              >
+                <span>Google Drive</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+
+              {/* Upvote Button (Neon Postgres) */}
               <ReactionButton
                 targetId={note.slug}
                 targetType="note"
@@ -122,127 +123,62 @@ export default async function NoteDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Key Takeaways Box (Notion Callout) */}
-        {note.keyTakeaways && note.keyTakeaways.length > 0 && (
-          <div className="mb-10 p-6 rounded-2xl bg-cyan-500/5 dark:bg-cyan-500/10 border border-cyan-500/20">
-            <div className="flex items-center gap-2 mb-3">
-              <Lightbulb className="w-5 h-5 text-cyan-500" />
-              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                Key Architecture Takeaways
-              </h2>
-            </div>
-            <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-              {note.keyTakeaways.map((takeaway, idx) => (
-                <li key={idx} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-500 shrink-0 mt-0.5" />
-                  <span>{takeaway}</span>
-                </li>
+        {/* Embedded Google Drive PDF Viewer Container */}
+        <div className="my-8 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-[#0c121e] shadow-2xl">
+          <div className="px-5 py-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span className="font-mono flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Interactive In-App PDF Document Viewer</span>
+            </span>
+            <a
+              href={note.driveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-400 hover:underline flex items-center gap-1"
+            >
+              <span>Pop-out in Google Drive</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+
+          <div className="relative w-full h-[650px] sm:h-[800px] bg-slate-950">
+            <iframe
+              src={embedUrl}
+              title={note.title}
+              className="w-full h-full border-0"
+              allow="autoplay"
+            />
+          </div>
+        </div>
+
+        {/* Tags if provided */}
+        {note.tags && (
+          <div className="flex flex-wrap items-center gap-2 mb-8">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1">
+              Topics:
+            </span>
+            {note.tags
+              .split(",")
+              .filter(Boolean)
+              .map((tag: string, idx: number) => (
+                <span
+                  key={idx}
+                  className="px-2.5 py-1 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60"
+                >
+                  #{tag.trim()}
+                </span>
               ))}
-            </ul>
           </div>
         )}
 
-        {/* Content Sections */}
-        <div className="space-y-8">
-          {note.sections.map((section, idx) => {
-            if (section.type === "callout") {
-              const isWarning = section.calloutType === "warning";
-              const isTip = section.calloutType === "tip";
-              return (
-                <div
-                  key={idx}
-                  className={`p-5 rounded-2xl border ${
-                    isWarning
-                      ? "bg-amber-500/5 border-amber-500/20 text-amber-900 dark:text-amber-200"
-                      : isTip
-                      ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-200"
-                      : "bg-slate-100 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200"
-                  }`}
-                >
-                  <div className="flex items-center gap-2 font-bold text-sm mb-1.5">
-                    {isWarning ? (
-                      <AlertTriangle className="w-4 h-4 text-amber-500" />
-                    ) : isTip ? (
-                      <Sparkles className="w-4 h-4 text-emerald-500" />
-                    ) : (
-                      <Info className="w-4 h-4 text-cyan-500" />
-                    )}
-                    <span>{section.title}</span>
-                  </div>
-                  <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-line opacity-95">
-                    {Array.isArray(section.content) ? section.content.join("\n\n") : section.content}
-                  </p>
-                </div>
-              );
-            }
-
-            if (section.type === "code" && section.codeSnippet) {
-              return (
-                <div key={idx} className="space-y-2">
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                    {section.title}
-                  </h3>
-                  {section.codeSnippet.caption && (
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {section.codeSnippet.caption}
-                    </p>
-                  )}
-                  <div className="rounded-2xl overflow-hidden border border-slate-800 bg-[#0d1117]">
-                    <div className="px-4 py-2 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
-                      <span>{section.codeSnippet.language}</span>
-                      <span>UTF-8</span>
-                    </div>
-                    <pre className="p-4 sm:p-5 overflow-x-auto text-xs sm:text-sm font-mono text-slate-200 leading-relaxed">
-                      <code>{section.codeSnippet.code}</code>
-                    </pre>
-                  </div>
-                </div>
-              );
-            }
-
-            if (section.type === "diagram") {
-              return (
-                <div key={idx} className="space-y-2">
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                    {section.title}
-                  </h3>
-                  <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 font-mono text-xs sm:text-sm text-cyan-400 overflow-x-auto whitespace-pre">
-                    {section.content}
-                  </div>
-                </div>
-              );
-            }
-
-            // Default Text Section
-            return (
-              <div key={idx} className="space-y-3">
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-                  {section.title}
-                </h3>
-                {Array.isArray(section.content) ? (
-                  section.content.map((p, pIdx) => (
-                    <p key={pIdx} className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                      {p}
-                    </p>
-                  ))
-                ) : (
-                  <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                    {section.content}
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
         {/* Feedback & Neon Cloud Upvote */}
-        <div className="mt-12 p-6 sm:p-7 rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div className="mt-10 p-6 sm:p-7 rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
           <div>
             <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-              Found this architecture note helpful?
+              Found this study note helpful for your preparation?
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Upvotes persist directly to Neon Postgres and highlight the most practical patterns.
+              Your upvote helps surface high-signal revision notes to the developer community.
             </p>
           </div>
           <ReactionButton
@@ -256,7 +192,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
         <CommentsSection
           targetId={note.slug}
           targetType="note"
-          title={`Community Discussion (${note.title})`}
+          title={`Discussion & Questions (${note.title})`}
         />
 
         {/* Footer Next Steps */}

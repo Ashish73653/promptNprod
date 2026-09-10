@@ -59,7 +59,7 @@ export default function AboutPage() {
               Visual Study Notes
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Notion-powered architecture flowcharts, SQL mental models, and AI cheatsheets designed for fast, high-retention learning.
+              Curated PDF architecture flowcharts, SQL mental models, and AWS/AI cheatsheets with in-app reading and Google Drive downloads.
             </p>
           </div>
 

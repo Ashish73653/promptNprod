@@ -35,9 +35,26 @@ export const comments = pgTable('comments', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Study Notes & PDF Cheatsheets Vault (Google Drive links & dynamic categories)
+export const studyNotes = pgTable('study_notes', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
+  category: text('category').notNull(), // e.g. "AWS & Cloud", "DBMS & Systems", "SQL Cheatsheets", "AI & Agents", or any custom category
+  description: text('description').notNull(),
+  driveUrl: text('drive_url').notNull(), // Google Drive public view/sharing link
+  fileSize: text('file_size'), // e.g. "3.4 MB"
+  pagesCount: integer('pages_count'), // e.g. 18
+  tags: text('tags'), // comma separated
+  upvotes: integer('upvotes').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export type Meme = typeof memes.$inferSelect;
 export type NewMeme = typeof memes.$inferInsert;
 export type Reaction = typeof reactions.$inferSelect;
 export type NewReaction = typeof reactions.$inferInsert;
 export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
+export type StudyNoteDb = typeof studyNotes.$inferSelect;
+export type NewStudyNoteDb = typeof studyNotes.$inferInsert;

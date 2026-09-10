@@ -1,13 +1,28 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { studyNotes } from "@/data/notes";
-import { Sparkles, ArrowRight, Clock, BookOpen, ArrowUpRight } from "lucide-react";
+import { Sparkles, ArrowRight, FileText, ArrowUpRight, Download, Eye } from "lucide-react";
+import { StudyNoteDb } from "@/db";
 
 export function StudyNotesSection() {
-  const featuredNotes = studyNotes.slice(0, 3);
+  const [featuredNotes, setFeaturedNotes] = useState<StudyNoteDb[]>([]);
+
+  useEffect(() => {
+    async function loadFeatured() {
+      try {
+        const res = await fetch("/api/notes");
+        const data = await res.json();
+        if (data.success && Array.isArray(data.notes)) {
+          setFeaturedNotes(data.notes.slice(0, 3));
+        }
+      } catch (err) {
+        console.error("Failed to fetch featured notes:", err);
+      }
+    }
+
+    loadFeatured();
+  }, []);
 
   return (
     <section className="py-12 sm:py-16">
@@ -15,14 +30,14 @@ export function StudyNotesSection() {
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-pink-500 flex items-center gap-1.5 mb-1">
-              <Sparkles className="w-3.5 h-3.5 fill-current" /> Notion-Powered Study Vault
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5 mb-1">
+              <Sparkles className="w-3.5 h-3.5 fill-current" /> Curated PDF Study Vault
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Visual Study Notes &amp; Patterns
+              Visual Study Notes &amp; Exam Cheatsheets
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
-              Architecture flowcharts, SQL mental models, and AI concepts directly from our engineering notebook.
+              High-signal revision notes for AWS Certifications, DBMS internals, SQL, and AI systems. Read embedded or open in Google Drive.
             </p>
           </div>
 
@@ -30,7 +45,7 @@ export function StudyNotesSection() {
             href="/notes"
             className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-cyan-600 dark:text-cyan-400 hover:underline shrink-0"
           >
-            <span>View All Study Notes</span>
+            <span>Explore All Study Notes ({featuredNotes.length > 0 ? "5+" : ""})</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -43,47 +58,47 @@ export function StudyNotesSection() {
               href={`/notes/${note.slug}`}
               className="group glass-card rounded-2xl overflow-hidden flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-200 hover:-translate-y-1"
             >
-              <div>
-                {/* Cover image if available */}
-                {note.coverImage ? (
-                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-                    <Image
-                      src={note.coverImage}
-                      alt={note.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-black/80 backdrop-blur-md text-white border border-white/20">
-                      {note.category}
-                    </div>
+              <div className="p-6">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                    {note.category}
+                  </span>
+                  <div className="flex items-center gap-1 text-[11px] text-slate-400 font-mono">
+                    <FileText className="w-3.5 h-3.5 text-cyan-500" />
+                    <span>{note.pagesCount ? `${note.pagesCount}p` : "PDF"}</span>
                   </div>
-                ) : (
-                  <div className="h-3 bg-gradient-to-r from-cyan-500 to-blue-600" />
-                )}
-
-                <div className="p-5">
-                  <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <span className="text-xl p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 leading-none">
-                      {note.icon}
-                    </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {note.readTime}
-                    </span>
-                  </div>
-
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors line-clamp-2">
-                    {note.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
-                    {note.shortDesc}
-                  </p>
                 </div>
+
+                <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors line-clamp-2">
+                  {note.title}
+                </h3>
+
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-3 leading-relaxed">
+                  {note.description}
+                </p>
+
+                {note.tags && (
+                  <div className="flex flex-wrap gap-1 mt-3.5">
+                    {note.tags
+                      .split(",")
+                      .slice(0, 2)
+                      .map((t, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                        >
+                          #{t.trim()}
+                        </span>
+                      ))}
+                  </div>
+                )}
               </div>
 
-              <div className="px-5 py-3 bg-slate-50/50 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-cyan-600 dark:text-cyan-400">
-                <span>Read Note</span>
+              <div className="px-6 py-3 bg-slate-50/50 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+                <span className="flex items-center gap-1">
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Read PDF Online</span>
+                </span>
                 <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </Link>
