@@ -50,6 +50,20 @@ export const studyNotes = pgTable('study_notes', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Automated Tech News & Radar Articles (Ingested via Cron from Hacker News, Dev.to & GitHub)
+export const articles = pgTable('articles', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
+  summary: text('summary').notNull(),
+  source: text('source').notNull(), // 'Hacker News' | 'Dev.to' | 'GitHub'
+  sourceUrl: text('source_url').notNull(),
+  category: text('category').notNull(), // 'AI & Agents' | 'Full-Stack' | 'Cloud & Infra' | 'Dev Tools' | 'Database'
+  author: text('author').notNull().default('Tech Radar'),
+  score: integer('score').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export type Meme = typeof memes.$inferSelect;
 export type NewMeme = typeof memes.$inferInsert;
 export type Reaction = typeof reactions.$inferSelect;
@@ -58,3 +72,5 @@ export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
 export type StudyNoteDb = typeof studyNotes.$inferSelect;
 export type NewStudyNoteDb = typeof studyNotes.$inferInsert;
+export type ArticleDb = typeof articles.$inferSelect;
+export type NewArticleDb = typeof articles.$inferInsert;
