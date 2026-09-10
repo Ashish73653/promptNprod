@@ -20,19 +20,23 @@ import {
   Clock,
   ArrowUpRight,
   Send,
-  Eye
+  Eye,
+  Mail,
+  BellRing,
+  Users
 } from "lucide-react";
-import { StudyNoteDb, NoteRequestDb } from "@/db";
+import { StudyNoteDb, NoteRequestDb, SubscriberDb } from "@/db";
 
 export default function AdminNotesPage() {
   const [adminKey, setAdminKey] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState<"published" | "requests">("published");
+  const [activeTab, setActiveTab] = useState<"published" | "requests" | "subscribers">("published");
 
   // Data
   const [notes, setNotes] = useState<StudyNoteDb[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [requests, setRequests] = useState<NoteRequestDb[]>([]);
+  const [subscribersList, setSubscribersList] = useState<SubscriberDb[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -47,6 +51,14 @@ export default function AdminNotesPage() {
   const [tags, setTags] = useState("");
   const [pagesCount, setPagesCount] = useState("");
   const [fileSize, setFileSize] = useState("");
+  const [notifySubscribers, setNotifySubscribers] = useState(true);
+
+  // Broadcast Form
+  const [broadcastTitle, setBroadcastTitle] = useState("");
+  const [broadcastCategory, setBroadcastCategory] = useState("AWS & Cloud");
+  const [broadcastUrl, setBroadcastUrl] = useState("");
+  const [broadcastDesc, setBroadcastDesc] = useState("");
+  const [isBroadcasting, setIsBroadcasting] = useState(false);
 
   // Restore stored admin key
   useEffect(() => {
@@ -91,12 +103,28 @@ export default function AdminNotesPage() {
     }
   }, []);
 
+  const fetchSubscribers = useCallback(async () => {
+    if (!adminKey) return;
+    try {
+      const res = await fetch("/api/subscribers", {
+        headers: { "x-admin-key": adminKey.trim() },
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.subscribers)) {
+        setSubscribersList(data.subscribers);
+      }
+    } catch (err) {
+      console.error("Failed to load subscribers:", err);
+    }
+  }, [adminKey]);
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchNotes();
       fetchRequests();
+      fetchSubscribers();
     }
-  }, [isAuthenticated, fetchNotes, fetchRequests]);
+  }, [isAuthenticated, fetchNotes, fetchRequests, fetchSubscribers]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,6 +173,7 @@ export default function AdminNotesPage() {
           tags: tags.trim(),
           pagesCount: pagesCount ? parseInt(pagesCount, 10) : null,
           fileSize: fileSize.trim() || "PDF",
+          notifySubscribers,
         }),
       });
 
@@ -157,7 +186,10 @@ export default function AdminNotesPage() {
       }
 
       if (data.success && data.note) {
-        setSuccessNotice(`Successfully published: "${data.note.title}" to Neon DB!`);
+        const notifText = data.notification?.count
+          ? ` (${data.notification.simulated ? "Simulated Resend alert for" : "Emailed"} ${data.notification.count} subscribers)`
+          : "";
+        setSuccessNotice(`Successfully published: "${data.note.title}"!${notifText}`);
         // Reset form
         setTitle("");
         setDriveUrl("");
@@ -168,7 +200,7 @@ export default function AdminNotesPage() {
         setCustomCategory("");
         setCategoryChoice(finalCategory);
         fetchNotes();
-        setTimeout(() => setSuccessNotice(""), 5000);
+        setTimeout(() => setSuccessNotice(""), 6000);
       } else {
         setError(data.message || "Failed to publish note.");
       }
@@ -177,6 +209,51 @@ export default function AdminNotesPage() {
       setError("Network error while connecting to database.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleSendBroadcast = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!broadcastTitle.trim() || !broadcastUrl.trim()) {
+      setError("Title and URL are required to send an email broadcast.");
+      return;
+    }
+
+    setIsBroadcasting(true);
+    setError("");
+    setSuccessNotice("");
+
+    try {
+      const res = await fetch("/api/notify-subscribers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminKey: adminKey.trim(),
+          title: broadcastTitle.trim(),
+          category: broadcastCategory.trim(),
+          description: broadcastDesc.trim(),
+          url: broadcastUrl.trim(),
+          type: "announcement",
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setSuccessNotice(
+          data.message || `Broadcast sent to ${data.count} subscribers via Resend!`
+        );
+        setBroadcastTitle("");
+        setBroadcastDesc("");
+        setBroadcastUrl("");
+        setTimeout(() => setSuccessNotice(""), 6000);
+      } else {
+        setError(data.message || "Failed to send email broadcast.");
+      }
+    } catch (err) {
+      console.error("Broadcast error:", err);
+      setError("Network error while dispatching broadcast.");
+    } finally {
+      setIsBroadcasting(false);
     }
   };
 
@@ -385,6 +462,18 @@ export default function AdminNotesPage() {
               </span>
             )}
           </button>
+
+          <button
+            onClick={() => setActiveTab("subscribers")}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeTab === "subscribers"
+                ? "bg-cyan-500 text-white shadow-md shadow-cyan-500/20"
+                : "bg-slate-100 dark:bg-slate-800/70 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Subscribers ({subscribersList.length})</span>
+          </button>
         </div>
 
         {successNotice && (
@@ -539,6 +628,23 @@ export default function AdminNotesPage() {
                       className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
                     />
                   </div>
+                </div>
+
+                {/* Auto-Notify Subscribers Checkbox */}
+                <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/25">
+                  <input
+                    type="checkbox"
+                    id="notifySubscribers"
+                    checked={notifySubscribers}
+                    onChange={(e) => setNotifySubscribers(e.target.checked)}
+                    className="w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 cursor-pointer accent-cyan-500"
+                  />
+                  <label htmlFor="notifySubscribers" className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 cursor-pointer flex items-center gap-2">
+                    <BellRing className="w-4 h-4 text-cyan-500 shrink-0" />
+                    <span>
+                      Email alert to all <strong>{subscribersList.length}</strong> active subscribers via Resend
+                    </span>
+                  </label>
                 </div>
 
                 <div className="pt-2 flex justify-end">
@@ -730,6 +836,202 @@ export default function AdminNotesPage() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 3: SUBSCRIBERS & BROADCAST */}
+        {activeTab === "subscribers" && (
+          <div className="space-y-8">
+            {/* Top Stat Card */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                  Total Active Subscribers
+                </span>
+                <div className="text-3xl sm:text-4xl font-black text-cyan-500">
+                  {subscribersList.length}
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Stored in Neon PostgreSQL
+                </p>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                  Delivery Engine
+                </span>
+                <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>Resend</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                    Integrated
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Batch sending with dark-mode HTML templates
+                </p>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                  Auto-Dispatch on Publish
+                </span>
+                <div className="text-xl sm:text-2xl font-black text-emerald-500 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>Enabled</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Subscribers get notified whenever you publish
+                </p>
+              </div>
+            </div>
+
+            {/* Manual Announcement Broadcast Form */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
+              <div className="flex items-center gap-2 text-cyan-500 mb-2 text-xs font-bold uppercase tracking-wider">
+                <Mail className="w-4 h-4" />
+                <span>Dispatch Custom Email Blast</span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mb-2">
+                Send Announcement to All Subscribers
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+                Compose a custom newsletter blast or alert your audience about a newly released roadmap, YouTube drop, or study note.
+              </p>
+
+              <form onSubmit={handleSendBroadcast} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+                      Email Subject / Title *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={broadcastTitle}
+                      onChange={(e) => setBroadcastTitle(e.target.value)}
+                      placeholder="e.g. Distributed Systems & Kafka Notes Now Live!"
+                      className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+                      Category Tag
+                    </label>
+                    <input
+                      type="text"
+                      value={broadcastCategory}
+                      onChange={(e) => setBroadcastCategory(e.target.value)}
+                      placeholder="e.g. System Design, AWS, DBMS"
+                      className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+                    Target Resource URL *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={broadcastUrl}
+                    onChange={(e) => setBroadcastUrl(e.target.value)}
+                    placeholder="e.g. /notes/kafka-architecture or https://promptnprod.dev/roadmaps"
+                    className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+                    Description / Message
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={broadcastDesc}
+                    onChange={(e) => setBroadcastDesc(e.target.value)}
+                    placeholder="We just published high-signal revision notes covering event-driven architecture, partition strategies, and exam cheatsheets."
+                    className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    disabled={isBroadcasting || subscribersList.length === 0}
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-cyan-500/25 transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isBroadcasting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Sending via Resend...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Broadcast to {subscribersList.length} Subscribers</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Subscribers List Table */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
+              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mb-6">
+                Active Subscriber List ({subscribersList.length})
+              </h2>
+
+              {subscribersList.length === 0 ? (
+                <div className="py-12 text-center text-xs text-slate-400">
+                  No subscribers recorded yet.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <th className="pb-3 px-3">Subscriber Email</th>
+                        <th className="pb-3 px-3">Source Tag</th>
+                        <th className="pb-3 px-3">Status</th>
+                        <th className="pb-3 px-3">Subscribed Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                      {subscribersList.map((sub) => (
+                        <tr
+                          key={sub.id}
+                          className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors"
+                        >
+                          <td className="py-3 px-3 font-semibold text-slate-900 dark:text-white">
+                            {sub.email}
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className="px-2 py-0.5 rounded-md text-[11px] font-mono bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                              {sub.source}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className="inline-flex items-center gap-1 text-emerald-500 font-semibold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                              <span className="capitalize">{sub.status}</span>
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-slate-400 font-mono">
+                            {new Date(sub.createdAt).toLocaleDateString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

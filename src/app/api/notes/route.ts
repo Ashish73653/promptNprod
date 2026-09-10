@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db, studyNotes } from "@/db";
+import { db, studyNotes, subscribers } from "@/db";
 import { desc, eq } from "drizzle-orm";
+import { sendSubscriberNotification } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -70,7 +71,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, category, driveUrl, description, tags, fileSize, pagesCount } = body;
+    const { 
+      title, 
+      category, 
+      driveUrl, 
+      description, 
+      tags, 
+      fileSize, 
+      pagesCount,
+      notifySubscribers = true 
+    } = body;
 
     if (!title || !category || !driveUrl || !description) {
       return NextResponse.json(
@@ -106,9 +116,37 @@ export async function POST(request: NextRequest) {
       })
       .returning();
 
+    // Auto-notify all active subscribers in Neon DB
+    let notificationResult = null;
+    if (notifySubscribers) {
+      try {
+        const activeSubscribers = await db
+          .select({ email: subscribers.email })
+          .from(subscribers)
+          .where(eq(subscribers.status, "active"));
+
+        const recipientEmails = activeSubscribers.map((s) => s.email).filter(Boolean);
+
+        if (recipientEmails.length > 0) {
+          notificationResult = await sendSubscriberNotification({
+            title: inserted.title,
+            category: inserted.category,
+            description: inserted.description,
+            url: `/notes/${inserted.slug}`,
+            driveUrl: inserted.driveUrl,
+            type: "note",
+            recipientEmails,
+          });
+        }
+      } catch (notifyErr) {
+        console.error("[Study Notes API] Notification dispatch error:", notifyErr);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       note: inserted,
+      notification: notificationResult,
     });
   } catch (error) {
     console.error("[Study Notes API] Insert error:", error);
