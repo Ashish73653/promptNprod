@@ -212,11 +212,20 @@ export default function NotesPage() {
                 className="group rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0c121e] hover:border-cyan-500/40 hover:shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 flex flex-col justify-between overflow-hidden"
               >
                 <div className="p-6 sm:p-7">
-                  {/* Category Badge & Meta */}
+                  {/* Category Badge, New badge & Meta */}
                   <div className="flex items-center justify-between gap-2 mb-3.5">
-                    <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-                      {note.category}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                        {note.category}
+                      </span>
+                      {/* "New" badge: published within last 14 days */}
+                      {note.createdAt &&
+                        Date.now() - new Date(note.createdAt).getTime() < 14 * 24 * 60 * 60 * 1000 && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 animate-pulse">
+                          ✦ New
+                        </span>
+                      )}
+                    </div>
 
                     <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
                       {note.pagesCount && <span>{note.pagesCount} pages</span>}

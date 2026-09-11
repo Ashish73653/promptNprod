@@ -1,1 +1,52 @@
-{"name":"","short_name":"","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "name": "Prompt N Prod",
+  "short_name": "PNP",
+  "description": "From Prompt to Production — Visual study notes, interactive roadmaps, and live tech news for developers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07090e",
+  "theme_color": "#06b6d4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "developer tools", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Study Notes",
+      "short_name": "Notes",
+      "description": "Browse visual study notes and PDF cheatsheets",
+      "url": "/notes",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "Roadmaps",
+      "short_name": "Roadmaps",
+      "description": "Interactive developer roadmaps",
+      "url": "/roadmaps",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "Tech News",
+      "short_name": "News",
+      "description": "Live tech news and release radar",
+      "url": "/feed",
+      "icons": [{ "src": "/favicon-32x32.png", "sizes": "32x32" }]
+    }
+  ]
+}

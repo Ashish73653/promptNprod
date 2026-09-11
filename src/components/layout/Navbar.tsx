@@ -13,7 +13,6 @@ import {
   BookOpen, 
   Code2, 
   Laugh, 
-  CheckCircle2, 
   Compass,
   SlidersHorizontal
 } from "lucide-react";
@@ -64,14 +63,9 @@ export function Navbar() {
               <Image src="/Logo.png" alt="Prompt N Prod" fill className="object-contain p-0.5" priority sizes="36px" />
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
-                  Prompt<span className="text-cyan-500">N</span>Prod
-                </span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 dark:text-cyan-400 border border-cyan-500/20">
-                  V2
-                </span>
-              </div>
+              <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
+                Prompt<span className="text-cyan-500">N</span>Prod
+              </span>
               <span className="text-[10px] text-slate-500 dark:text-slate-400 -mt-1 hidden sm:block">
                 From Prompt to Production
               </span>
@@ -176,11 +170,8 @@ export function Navbar() {
               </Link>
             );
           })}
-          <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between px-2">
+          <div className="pt-2 border-t border-slate-200 dark:border-slate-800 px-2">
             <span className="text-xs text-slate-500 font-medium">Prompt N Prod</span>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-500 font-medium">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Production Ready
-            </div>
           </div>
         </div>
       )}

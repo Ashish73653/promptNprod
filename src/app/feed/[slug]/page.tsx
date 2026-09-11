@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { ShareButtons } from "@/components/common/ShareButtons";
 import { NewsletterBox } from "@/components/common/NewsletterBox";
+import { CommentsSection } from "@/components/common/CommentsSection";
+import { ReadingProgress } from "@/components/ui/ReadingProgress";
 
 export function generateStaticParams() {
   return getAllArticles().map((article) => ({
@@ -77,6 +79,7 @@ export default async function ArticleDetailPage({
 
   return (
     <article className="py-12 sm:py-16">
+      <ReadingProgress />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-8">
@@ -240,6 +243,13 @@ export default async function ArticleDetailPage({
             subtitle="Subscribe to Prompt N Prod Tech Radar for weekly architectural breakdowns and production insights."
           />
         </div>
+
+        {/* Comments section */}
+        <CommentsSection
+          targetId={article.slug}
+          targetType="article"
+          title={`Discussion — ${article.title}`}
+        />
 
         {/* Bottom CTA to roadmaps */}
         <div className="flex flex-col sm:flex-row items-center justify-between p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md gap-4">

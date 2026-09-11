@@ -152,12 +152,15 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
 
   const handleUpvote = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const hasVoted = userVoted[id];
-    const currentCount = upvoteMap[id] || 0;
-    const newCount = hasVoted ? Math.max(0, currentCount - 1) : currentCount + 1;
-    const newVoted = { ...userVoted, [id]: !hasVoted };
 
-    const updatedCounts = { ...upvoteMap, [id]: newCount };
+    // ── ONE-WAY ONLY: once voted, ignore further clicks ──
+    if (userVoted[id]) return;
+
+    const currentCount = upvoteMap[id] || 0;
+    const newVoted = { ...userVoted, [id]: true };
+    const updatedCounts = { ...upvoteMap, [id]: currentCount + 1 };
+
+    // Optimistic UI update
     setUpvoteMap(updatedCounts);
     setUserVoted(newVoted);
 
@@ -172,22 +175,21 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
       }
 
       // Persist to Neon database
-      if (!hasVoted) {
-        await fetch("/api/reactions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            targetId: id,
-            targetType: "meme",
-            reactionType: "upvote",
-            userIdentifier: userId,
-          }),
-        });
-      }
+      await fetch("/api/reactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          targetId: id,
+          targetType: "meme",
+          reactionType: "upvote",
+          userIdentifier: userId,
+        }),
+      });
     } catch {
-      // Ignore
+      // Ignore network errors — optimistic state is already set
     }
   };
+
 
   const handleShare = (meme: Meme, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -394,13 +396,15 @@ export function MemeGallery({ initialMemes = [] }: MemeGalleryProps) {
                         {/* Upvote button */}
                         <button
                           onClick={(e) => handleUpvote(meme.id, e)}
-                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
+                          disabled={isVoted}
+                          title={isVoted ? "Already upvoted!" : "Upvote this meme"}
+                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all select-none ${
                             isVoted
-                              ? "bg-rose-500/10 text-rose-500 border-rose-500/30"
-                              : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-rose-500/40 hover:text-rose-500"
+                              ? "bg-rose-500/10 text-rose-500 border-rose-500/30 cursor-default"
+                              : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-rose-500/40 hover:text-rose-500 active:scale-95 cursor-pointer"
                           }`}
                         >
-                          <Heart className={`w-3.5 h-3.5 ${isVoted ? "fill-current" : ""}`} />
+                          <Heart className={`w-3.5 h-3.5 transition-transform ${isVoted ? "fill-current scale-110" : ""}`} />
                           <span>{count}</span>
                         </button>
                       </div>

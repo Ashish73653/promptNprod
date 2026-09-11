@@ -8,7 +8,8 @@ import {
   ArrowLeft, 
   ExternalLink, 
   BookOpen, 
-  FileText
+  FileText,
+  Sparkles
 } from "lucide-react";
 import { getGoogleDriveEmbedUrl, getGoogleDriveDownloadUrl } from "@/lib/drive";
 import { ReactionButton } from "@/components/common/ReactionButton";
@@ -16,6 +17,7 @@ import { CommentsSection } from "@/components/common/CommentsSection";
 import { ShareButtons } from "@/components/common/ShareButtons";
 import { NewsletterBox } from "@/components/common/NewsletterBox";
 import { NoteDownloadButton } from "@/components/notes/NoteDownloadButton";
+import { ReadingProgress } from "@/components/ui/ReadingProgress";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -100,8 +102,15 @@ export default async function NoteDetailPage({ params }: PageProps) {
   const embedUrl = getGoogleDriveEmbedUrl(note.driveUrl);
   const downloadUrl = getGoogleDriveDownloadUrl(note.driveUrl) || note.driveUrl;
 
+  // "New" badge: published within last 14 days
+  const isNew = note.createdAt
+    ? (Date.now() - new Date(note.createdAt).getTime()) < 14 * 24 * 60 * 60 * 1000
+    : false;
+
   return (
     <article className="min-h-screen py-10 sm:py-16">
+      {/* Reading progress bar */}
+      <ReadingProgress />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between mb-8">
@@ -113,9 +122,16 @@ export default async function NoteDetailPage({ params }: PageProps) {
             <span>Back to All Study Notes</span>
           </Link>
 
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
-            {note.category}
-          </span>
+          <div className="flex items-center gap-2">
+            {isNew && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 animate-pulse">
+                <Sparkles className="w-3 h-3" /> New
+              </span>
+            )}
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+              {note.category}
+            </span>
+          </div>
         </div>
 
         {/* Note Header */}
