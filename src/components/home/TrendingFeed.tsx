@@ -99,18 +99,18 @@ export function TrendingFeed({ articles }: TrendingFeedProps) {
           </Link>
         </div>
 
-        {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayedItems.map((item) => {
+        {/* Articles Grid — 2 on mobile, 3 on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {displayedItems.map((item, idx) => {
             const cardContent = (
               <div className="glass-card rounded-2xl p-6 flex flex-col justify-between h-full group hover:border-cyan-500/40 transition-all duration-200">
                 <div>
-                  {/* Top metadata tags */}
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                  {/* Top metadata tags — no wrap */}
+                  <div className="flex items-center gap-2 mb-3 overflow-hidden">
+                    <span className="shrink-0 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 truncate max-w-[120px]">
                       {item.category}
                     </span>
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 truncate min-w-0">
                       {item.source}
                     </span>
                   </div>
@@ -155,7 +155,7 @@ export function TrendingFeed({ articles }: TrendingFeedProps) {
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block h-full"
+                  className={`block h-full ${idx === 2 ? "hidden lg:block" : ""}`}
                 >
                   {cardContent}
                 </a>
@@ -163,7 +163,7 @@ export function TrendingFeed({ articles }: TrendingFeedProps) {
             }
 
             return (
-              <Link key={item.id} href={item.url} className="block h-full">
+              <Link key={item.id} href={item.url} className={`block h-full ${idx === 2 ? "hidden lg:block" : ""}`}>
                 {cardContent}
               </Link>
             );
