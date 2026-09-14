@@ -4,17 +4,16 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { 
-  Zap, 
-  Search, 
-  Menu, 
-  X, 
-  Sparkles, 
-  BookOpen, 
-  Code2, 
-  Laugh, 
+import {
+  Zap,
+  Search,
+  Menu,
+  X,
+  Sparkles,
+  BookOpen,
+  Code2,
+  Laugh,
   Compass,
-  Briefcase,
   SlidersHorizontal
 } from "lucide-react";
 import { GithubIcon, InstagramIcon } from "../ui/Icons";
@@ -25,7 +24,6 @@ const navLinks = [
   { name: "Tech News", href: "/feed", icon: Sparkles },
   { name: "Study Notes", href: "/notes", icon: BookOpen },
   { name: "Roadmaps", href: "/roadmaps", icon: Code2 },
-  { name: "Jobs", href: "/jobs", icon: Briefcase },
   { name: "Memes", href: "/memes", icon: Laugh },
   { name: "About", href: "/about", icon: Compass },
 ];
@@ -51,11 +49,10 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-200 ${
-        scrolled
+      className={`sticky top-0 z-40 w-full transition-all duration-200 ${scrolled
           ? "glass shadow-md shadow-black/5"
           : "bg-transparent border-b border-slate-200/50 dark:border-slate-800/40"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-18">
@@ -83,11 +80,10 @@ export function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                    isActive
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isActive
                       ? "text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 dark:bg-cyan-500/15"
                       : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span>{link.name}</span>
@@ -161,11 +157,10 @@ export function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium ${
-                  isActive
+                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium ${isActive
                     ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-semibold"
                     : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60"
-                }`}
+                  }`}
               >
                 <Icon className="w-4 h-4 text-cyan-500" />
                 <span>{link.name}</span>

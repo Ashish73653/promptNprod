@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, integer, timestamp, boolean } from 'drizzle-orm/pg-core';
 
 // Memes table: Stores Reddit-synced and Community-submitted dev humor
 export const memes = pgTable('memes', {
@@ -85,6 +85,29 @@ export const subscribers = pgTable('subscribers', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Remote Tech Jobs: Ingested via cron from Remotive, auto-deleted after 30 days
+export const jobs = pgTable('jobs', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  company: text('company').notNull(),
+  companyLogo: text('company_logo'),
+  location: text('location').notNull().default('Remote'),
+  category: text('category').notNull().default('Software Dev'), // Frontend | Backend | AI & ML | DevOps | Full-Stack | Design
+  tags: text('tags'), // comma-separated e.g. "react,typescript,node"
+  salary: text('salary'),
+  description: text('description'),
+  url: text('url').notNull().unique(),
+  source: text('source').notNull().default('Remotive'), // 'Remotive' | 'LinkedIn' | 'Naukri'
+  jobType: text('job_type').notNull().default('Full Time'), // 'Full Time' | 'Contract' | 'Part Time'
+  isRemote: boolean('is_remote').notNull().default(true),
+  postedAt: timestamp('posted_at').notNull().defaultNow(),
+  expiresAt: timestamp('expires_at').notNull(), // auto-delete after 30 days
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export type JobDb = typeof jobs.$inferSelect;
+export type NewJobDb = typeof jobs.$inferInsert;
+
 export type Meme = typeof memes.$inferSelect;
 export type NewMeme = typeof memes.$inferInsert;
 export type Reaction = typeof reactions.$inferSelect;
@@ -99,5 +122,3 @@ export type NoteRequestDb = typeof noteRequests.$inferSelect;
 export type NewNoteRequestDb = typeof noteRequests.$inferInsert;
 export type SubscriberDb = typeof subscribers.$inferSelect;
 export type NewSubscriberDb = typeof subscribers.$inferInsert;
-
-

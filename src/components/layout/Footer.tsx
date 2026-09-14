@@ -103,11 +103,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/jobs" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
-                  Job Board
-                </Link>
-              </li>
-              <li>
                 <Link href="/memes" className="text-slate-600 dark:text-slate-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">
                   Dev Memes
                 </Link>

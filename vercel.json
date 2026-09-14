@@ -3,6 +3,11 @@
     {
       "path": "/api/cron/ingest-news",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest-jobs",
+      "schedule": "0 2 * * *"
     }
   ]
 }
+
