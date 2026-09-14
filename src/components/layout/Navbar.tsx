@@ -14,6 +14,7 @@ import {
   Code2, 
   Laugh, 
   Compass,
+  Briefcase,
   SlidersHorizontal
 } from "lucide-react";
 import { GithubIcon, InstagramIcon } from "../ui/Icons";
@@ -24,6 +25,7 @@ const navLinks = [
   { name: "Tech News", href: "/feed", icon: Sparkles },
   { name: "Study Notes", href: "/notes", icon: BookOpen },
   { name: "Roadmaps", href: "/roadmaps", icon: Code2 },
+  { name: "Jobs", href: "/jobs", icon: Briefcase },
   { name: "Memes", href: "/memes", icon: Laugh },
   { name: "About", href: "/about", icon: Compass },
 ];
